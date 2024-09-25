@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const generateJWT = require("../utils/generateJWT");
 const userRole = require("../utils/user-roles");
 const APIERROR = require("../utils/apiError");
+
 require('dotenv').config()
 
 const getAllUsers = async (req, res, next) => {
@@ -21,10 +22,15 @@ const getAllUsers = async (req, res, next) => {
 const getSingleUser = async (req, res, next) => {
     const { userId } = req.params
 
-
-    const user = await User.findById(userId)
+    if(userId==req.id){
+        const user = await User.findById(userId)
     if (!user) return next(new APIERROR(404, "user not found"));
     res.status(200).json({ status: "success", data: user })
+    }else{
+        return next(new APIERROR(401, "You are not authorized "));
+    }
+
+    
 
 }
 
@@ -51,9 +57,10 @@ const createUser = async (req, res, next) => {
         })
         //generate jwt token
 
-        const token = await generateJWT({ email: email, userId: newUser._id, roles: newUser.roles })
+        const token = await generateJWT({ email: email, _id: newUser._id, role: newUser.roles })
         // newUser.token = token;
-
+        
+        
         await newUser.save();
         res.status(201).json({ status: "success", data: token })
     } catch (error) {

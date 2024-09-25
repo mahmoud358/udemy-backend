@@ -2,7 +2,7 @@ module.exports =(...roles)=>{
     // console.log("roles",roles);
     return(req,res,next)=>{
     
-console.log(req.role);
+// console.log(roles);
 
 
         if(!roles.includes(req.role)){

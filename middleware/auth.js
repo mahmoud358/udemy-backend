@@ -8,11 +8,11 @@ exports.auth = async function (req,res,next) {
     }
     try {
         let decoded= await Uitl.promisify(jwt.verify)(authorization,process.env.SECRET)
-        console.log(decoded);
+        // console.log(decoded);
         
         req.id=decoded._id
         req.role=decoded.role
-        // console.log(req.id);
+        // console.log(decoded.role);
 
 
 
