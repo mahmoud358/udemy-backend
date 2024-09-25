@@ -21,6 +21,7 @@ router.get("/",userscontroller.getAllUsers );
 
  router.delete("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor), userscontroller.deleteUser);
 
+
  router.post("/login",userscontroller.login);
 
   
