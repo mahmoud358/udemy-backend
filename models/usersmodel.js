@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const userRole = require('../utils/user-roles');
-
+const crypto = require('crypto')
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -50,8 +50,22 @@ const userSchema = new mongoose.Schema({
   ,avatar :{
     type:String,
     default:"uploads/profile2.jpg"
-  }
+  },
+  passwordResetToken:String,
+  passwordResetExpires:Date
 });
+
+userSchema.methods.createResetPasswordToken=function(){
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetExpires = Date.now() + 15 * 60 * 1000;
+
+  console.log(resetToken,this.passwordResetToken);
+
+  return resetToken;
+
+}
 
 const User = mongoose.model('User', userSchema);
 
