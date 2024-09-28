@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
+  "engines":{"node":"20.16.0"},
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -21,3 +22,4 @@
     "validator": "^13.12.0"
   }
 }
+
