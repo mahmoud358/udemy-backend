@@ -5,6 +5,8 @@ const router=express.Router()
 const{getCategorey,saveCategorey,getCategoreyById,deleteCategoreyById,patchCategoreyById}=require('../controllers/categoreycontroller')
 
 // ===========================================
+
+
 router.get('/',getCategorey)
 
  router.post('/',saveCategorey)
