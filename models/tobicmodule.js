@@ -5,8 +5,8 @@ let topicSchema=mongoose.Schema({
         type:String,
         required:[true,"Please,Enter topic name first"],
         unique:[true,'this name is already exist , topic name must be unique'],
-        minLength:3,
-        maxLength:[16, " maximum length is 16 letter"]
+        minLength:2,
+        maxLength:[30, " maximum length is 16 letter"]
     },
     description:{
         type:String,
@@ -15,6 +15,16 @@ let topicSchema=mongoose.Schema({
         maxLength:[3000, " maximum length is 40 letter"]
 
     },
+    subcategoreyID:{
+        type:mongoose.Schema.ObjectId,
+        ref:"subcategories",
+        required:[true,"Please, Enter your subcategorey"]
+    },
+    categoreyID: {
+        type:mongoose.Schema.ObjectId,
+         ref:"categorey",
+         required:[true,"Please,Enter categorey Id "]
+     },
     learnMoreAbout:{
         type:String
     },

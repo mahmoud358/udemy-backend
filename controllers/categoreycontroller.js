@@ -1,96 +1,92 @@
 const express=require('express')
 
 const router=express.Router()
-
+const APIERROR = require("../utils/apiError");
 // ****************************************
 
-saveCategorey= async(req,res)=>{
+saveCategorey= async(req,res,next)=>{
     var newCategory= req.body ;
     try{
         const savedCategory =await categoreylistModel.create(newCategory)
-        res.json({massage:'success',data:savedCategory})
+        res.status(201).json({status:'success',data:savedCategory})
     }catch(err){
-        res.json({massage:err.message}).status(400)
+        return next(new APIERROR(400, err.message))
     }
     
     
 }
 
 
-getCategorey=async(req,res)=>{
+getCategorey=async(req,res,next)=>{
 
     try{
-       let categorey= await categoreylistModel.find().populate({
-        path:"subcategorey",
-
-       })
-       res.json(categorey)
+       let categorey= await categoreylistModel.find()
+       res.status(200).json({status:'success',data:categorey})
     }catch(err){
-        res.json({massage:err.message}).status(400)
+        return next(new APIERROR(400, err.message))
     }
  }
 
 
- getCategoreyById= async (req,res)=>{
+ getCategoreyById= async (req,res,next)=>{
     let {id}=req.params
     
     let getCategorey= await categoreylistModel.findById(id)
      
     try{
         if(getCategorey){
-            res.status(200).json({massage:"success",data:getCategorey})
+            res.status(200).json({status:"success",data:getCategorey})
          }
     
          else{
-            res.status(404).json({massage:"not found"})
+            return next(new APIERROR(400, "not found"))
             
          }
-    }catch{
-        res.status(404).json({massage:err.message})
+    }catch(err){
+        return next(new APIERROR(404, err.message))
 
     }
  
  }
 
 
- deleteCategoreyById= async (req,res)=>{
+ deleteCategoreyById= async (req,res,next)=>{
     let {id}=req.params
     
     let getCategorey= await categoreylistModel.findByIdAndDelete(id)
      
     try{
         if(getCategorey){
-            res.status(200).json({massage:`categorey with ID ${id} has been deleted`})
+            res.status(200).json({status:"success",massage:`categorey with ID ${id} has been deleted`})
          }
     
          else{
-            res.status(404).json({massage:err.message})
+            return next(new APIERROR(404, "categorey is not found"))
             
          }
-    }catch{
-        res.status(404).json({massage:err.message})
-
+    }catch(err){
+        return next(new APIERROR(404, err.message))
     }
  
 }
 
 
-patchCategoreyById=async(req,res)=>{
+patchCategoreyById=async(req,res,next)=>{
     let newCategory=req.body
     let {id}=req.params
     try{
         let getCategory= await categoreylistModel.findByIdAndUpdate(id,{$set:newCategory})
 
         if(getCategory){
-            res.status(200).json({massage:`Document with ID ${id} has been updated`,data:newCategory})
+            res.status(200).json({status:"success",massage:`Document with ID ${id} has been updated`})
          }
     
          else{
-            res.status(404).json({massage:err.message})
+            return next(new APIERROR(404, "categorey is not found"))
             
          }
     }catch{
-        res.status(404).json({massage:err.message})
+        return next(new APIERROR(404, err.message))
 
     }
 }
@@ -102,4 +98,5 @@ module.exports={getCategorey,saveCategorey,getCategoreyById,deleteCategoreyById,
 
 //============= getting collection todolist and its schema from model  =========
 
-const categoreylistModel= require('../models/categoreymodule')
+const categoreylistModel= require('../models/categoreymodule');
+

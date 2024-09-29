@@ -2,10 +2,10 @@ const express=require('express')
 
 const router=express.Router()
 
-const{saveTopic,getTopic,getTopicById,deleteTopicById,patchTopoicById}=require('../controllers/tobiccontroller')
+const{saveTopic,getTopicBysubCategoreyID,getTopicById,deleteTopicById,patchTopoicById}=require('../controllers/tobiccontroller')
 
 // ===========================================
-router.get('/',getTopic)
+router.get('/by/:subcategoreyID',getTopicBysubCategoreyID)
 
  router.post('/',saveTopic)
 

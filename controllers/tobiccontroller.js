@@ -4,6 +4,7 @@ const router=express.Router()
 const topicListModel=require("../models/tobicmodule")
 
 const categoreylistModel= require('../models/categoreymodule')
+const APIERROR = require("../utils/apiError")
 
 // const {relatedcategoreyToTopic} = require("../middleware/topicMiddleWare")
 
@@ -13,22 +14,23 @@ saveTopic=async(req,res,next)=>{
     newTopic=req.body
     try{
       const savedTopic=await topicListModel.create(newTopic)
-      res.json({status:"success", message:`${savedTopic} issaved`})
+      res.status(201).json({status:"success", data:savedTopic})
 
     }catch(err){
-        res.json({message:err.message}).status(400)
+        return next(new APIERROR(400, err.message))
     }
 }
 
 
-getTopic=async(req,res,next)=>{
-
+getTopicBysubCategoreyID=async(req,res,next)=>{
+    
+    const {subcategoreyID}=req.params
     try{
-        const getTopic=await topicListModel.find()
+        const getTopic=await topicListModel.find({subcategoreyID})
 
-        res.status(200).json({status:"success", message:getTopic})
+        res.status(200).json({status:"success", data:getTopic})
     }catch(err){
-        res.json({message:err.message}).status(400)
+        return next(new APIERROR(400, err.message))
     }
 }
 
@@ -36,11 +38,11 @@ getTopic=async(req,res,next)=>{
 getTopicById=async(req,res,next)=>{
    const {topicID}=req.params
     try{
-        const getTopic=await topicListModel.findById(topicID).populate('subcategorey')
+        const getTopic=await topicListModel.findById(topicID)
 
-        res.status(200).json({status:"success", message:getTopic})
+        res.status(200).json({status:"success", data:getTopic})
     }catch(err){
-        res.json({message:err.message}).status(400)
+        return next(new APIERROR(400, err.message))
     }
 }
 
@@ -53,14 +55,15 @@ deleteTopicById=async(req,res,next)=>{
         const deletedTopic= await topicListModel.findByIdAndDelete(topicID)
 
         if(deletedTopic){
-            res.status(200).json({message:`Topic with ID : ${topicID} is deleted`})
+            res.status(200).json({status:"success",message:`Topic with ID : ${topicID} is deleted`})
         }
         else{
-        res.json({message:"not found"}).status(404)
+            return next(new APIERROR(404, "topic not found"))
+        
         }
         
      }catch(err){
-        res.json({message:err.message}).status(400)
+        return next(new APIERROR(400, err.message))
     }
 }
 
@@ -74,16 +77,16 @@ patchTopoicById=async (req,res,next)=>{
         console.log(topicID,); 
 
         if(updatedTopic){
-            res.status(200).json({massage:`Document with ID ${topicID} has been updated`,data:updatedTopic})
+            res.status(200).json({status:"success",massage:`Document with ID ${topicID} has been updated`})
          }
     
          else{
-            res.status(404).json({massage:"not found"})
+            return next(new APIERROR(404, "topic not found"))
             
          }
        await updatedTopic.save()
     }catch(err){
-        res.status(404).json({massage:err.message})
+        return next(new APIERROR(400, err.message))
         
     }
 
@@ -95,5 +98,5 @@ patchTopoicById=async (req,res,next)=>{
 
 // ............................................
 
-module.exports={saveTopic,getTopic,getTopicById,deleteTopicById,patchTopoicById}
+module.exports={saveTopic,getTopicBysubCategoreyID,getTopicById,deleteTopicById,patchTopoicById}
 

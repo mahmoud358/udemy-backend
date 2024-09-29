@@ -6,7 +6,7 @@ let categoreySchema=mongoose.Schema({
         required:[true,"Please,Enter categorey name first"],
         unique:[true,'this name is already exist , categorey name must be unique'],
         minLength:3,
-        maxLength:[16, " maximum length is 16 letter"]
+        maxLength:[25, " maximum length is 16 letter"]
     },
     description:{
         type:String,
@@ -15,11 +15,7 @@ let categoreySchema=mongoose.Schema({
 
     },
 
-    subcategorey:{
-        type:mongoose.Schema.ObjectId,
-        ref:"subcategories",
-        required:[true,"Please, Enter your subcategorey"]
-    }
+    
 
 },{Collection:'categorey'})
 
