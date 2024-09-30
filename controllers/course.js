@@ -19,9 +19,6 @@ let getCourseByID=async function(req,res,next){
     
     try{
         let course=await courseModel.findById(id);
-        if(course.instructor_id!=req.id){
-           return next(new APIERROR(401,"you have not authorization")); 
-        }
         res.status(200).json({status: "success",data:course})
     }catch(err){
        next(new APIERROR(404,err.message));

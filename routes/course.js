@@ -9,7 +9,7 @@ const userRoles = require("../utils/user-roles");
 
 
 router.get('/',getCourses);
-router.get('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),getCourseByID);
+router.get('/:id',getCourseByID);
 router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),addCourse);
 
 router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateCourse);
