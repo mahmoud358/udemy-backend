@@ -7,12 +7,28 @@ const APIERROR=require('../utils/apiError');
 let getCourses=async function(req,res,next){
     try{
         let courses=await courseModel.find();
-        res.status(200).json({courses})
+        res.status(200).json({status: "success",data:courses})
     }catch(err){
        next(new APIERROR(404,err.message));
 
     }
 }
+let getCourseByID=async function(req,res,next){
+    const {id}=req.params 
+    console.log(req.id);
+    
+    try{
+        let course=await courseModel.findById(id);
+        if(course.instructor_id!=req.id){
+           return next(new APIERROR(401,"you have not authorization")); 
+        }
+        res.status(200).json({status: "success",data:course})
+    }catch(err){
+       next(new APIERROR(404,err.message));
+
+    }
+}
+
 
 let addCourse=async function(req,res){
     req.body.instructor_id=req.id;
@@ -21,7 +37,7 @@ let addCourse=async function(req,res){
     try{
         let course=await courseModel.create(req.body);
         
-        res.status(201).json(course)
+        res.status(201).json({status: "success",data:course})
     }catch(err){
         next(new APIERROR(400,err.message));
     }
@@ -34,7 +50,7 @@ let updateCourse=async function(req,res,next){
         if(!course){
             return next(new APIERROR(404,"course not found"));
         }
-        res.status(200).json(course)
+        res.status(200).json({status: "success",data:course})
     }catch(err){
         next(new APIERROR(400,err.message));
     }
@@ -47,7 +63,7 @@ let deleteCourse=async function(req,res,next){
         if(!course){
             return next(new APIERROR(404,"course not found"));
         }
-        res.status(200).json({message:"succsse delete"})
+        res.status(200).json({status: "success",message:"success delete"})
     }catch(err){
         next(new APIERROR(400,err.message));
     }
@@ -55,4 +71,4 @@ let deleteCourse=async function(req,res,next){
 
 
 
-module.exports={getCourses,addCourse,updateCourse,deleteCourse}
+module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse}
