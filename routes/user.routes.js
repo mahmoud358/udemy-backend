@@ -26,6 +26,9 @@ router.get("/",userscontroller.getAllUsers );
 
   
  router.put("/updatePassword",auth,allowedTo(userRoles.USER,userRoles.Instructor),userscontroller.updatePassword);
+ router.post("/forgotPassword",userscontroller.forgotPassword);
+
  
+ router.patch("/resetPassword/:token",userscontroller.resetPassword);
 
  module.exports= router

@@ -4,90 +4,93 @@ const router=express.Router()
 
 // ****************************************
 
-saveSubcategorey= async(req,res)=>{
+saveSubcategorey= async(req,res,next)=>{
     var newSubcategory= req.body ;
     try{
         const savedSubcategory =await subcategoreylistModel.create(newSubcategory)
-        res.json({massage:'success',data:savedSubcategory})
+        res.status(201).json({status:'success',data:savedSubcategory})
     }catch(err){
-        res.json({massage:err.message}).status(400)
+        return next(new APIERROR(404, err.message))
     }
     
     
 }
 
 
-getSubcategorey=async(req,res)=>{
+getSubcategoreyByCategoreyID=async(req,res,next)=>{
+    let {categoreyID}=req.params
+    console.log(categoreyID);
+    
 
     try{
-       let Subcategorey= await subcategoreylistModel.find()
-       res.json(Subcategorey)
+       let Subcategorey= await subcategoreylistModel.find({categoreyID})
+       res.status(200).json({status:'success',data:Subcategorey})
     }catch(err){
-        res.json({massage:err.message}).status(400)
+        return next(new APIERROR(404, err.message))
     }
  }
 
 
- getSubcategoreyById= async (req,res)=>{
+ getSubcategoreyById= async (req,res,next)=>{
     let {id}=req.params
     
-    let getSubcategorey= await subcategoreylistModel.findById(id).populate("topics")
+    let getSubcategorey= await subcategoreylistModel.findById(id)
      
     try{
         if(getSubcategorey){
-            res.status(200).json({massage:"success",data:getSubcategorey})
+            res.status(200).json({status:"success",data:getSubcategorey})
          }
     
          else{
-            res.status(404).json({massage:err.message})
+            return next(new APIERROR(404, "Subcategorey not found"))
             
          }
-    }catch{
-        res.status(404).json({massage:err.message})
+    }catch(err){
+        return next(new APIERROR(404, err.message))
 
     }
  
  }
 
 
- deleteSubcategoreyById= async (req,res)=>{
+ deleteSubcategoreyById= async (req,res,next)=>{
     let {id}=req.params
     
     let getSubcategorey= await subcategoreylistModel.findByIdAndDelete(id)
      
     try{
         if(getSubcategorey){
-            res.status(200).json({massage:`Subcategorey with ID ${id} has been deleted`})
+            res.status(200).json({status:"success",massage:`Subcategorey with ID ${id} has been deleted`})
          }
     
          else{
-            res.status(404).json({massage:err.message})
+            return next(new APIERROR(404, "Subcategorey not found"))
             
          }
-    }catch{
-        res.status(404).json({massage:err.message})
+    }catch(err){
+        return next(new APIERROR(404, err.message))
 
     }
  
 }
 
 
-patchSubcategoreyById=async(req,res)=>{
+patchSubcategoreyById=async(req,res,next)=>{
     let newSubcategorey=req.body
     let {id}=req.params
     try{
         let getSubcategorey= await categoreylistModel.findByIdAndUpdate(id,{$set:newSubcategorey})
 
         if(getSubcategorey){
-            res.status(200).json({massage:`Subcategorey with ID ${id} has been updated`,data:newCategory})
+            res.status(200).json({status:"success",massage:`Subcategorey with ID ${id} has been updated`})
          }
     
          else{
-            res.status(404).json({massage:err.message})
+            return next(new APIERROR(404, "Subcategorey not found"))
             
          }
     }catch{
-        res.status(404).json({massage:err.message})
+        return next(new APIERROR(404, err.message))
 
     }
 }
@@ -95,8 +98,9 @@ patchSubcategoreyById=async(req,res)=>{
 
 //============= exporting methods to routes =====================
 
-module.exports={getSubcategorey,saveSubcategorey,getSubcategoreyById,deleteSubcategoreyById,patchSubcategoreyById}
+module.exports={getSubcategoreyByCategoreyID,saveSubcategorey,getSubcategoreyById,deleteSubcategoreyById,patchSubcategoreyById}
 
 //============= getting collection todolist and its schema from model  =========
 
-const subcategoreylistModel= require('../models/subcategoreymodule')
+const subcategoreylistModel= require('../models/subcategoreymodule');const APIERROR = require('../utils/apiError');
+

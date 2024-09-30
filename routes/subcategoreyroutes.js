@@ -2,10 +2,10 @@ const express=require('express')
 
 const router=express.Router()
 
-const{getSubcategorey,saveSubcategorey,getSubcategoreyById,deleteSubcategoreyById,patchSubcategoreyById}=require('../controllers/subcategoreycontroller')
+const{getSubcategoreyByCategoreyID,saveSubcategorey,getSubcategoreyById,deleteSubcategoreyById,patchSubcategoreyById}=require('../controllers/subcategoreycontroller')
 
 // ===========================================
-router.get('/',getSubcategorey)
+router.get('/by/:categoreyID',getSubcategoreyByCategoreyID)
 
  router.post('/',saveSubcategorey)
 

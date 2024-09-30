@@ -6,7 +6,7 @@ const subcategoreySchema=mongoose.Schema({
         required:[true,"Please,Enter Subcategorey name first"],
         unique:[true,'this name is already exist , Subcategorey name must be unique'],
         minLength:3,
-        maxLength:[16, " maximum length is 16 letter"]
+        maxLength:[30, " maximum length is 16 letter"]
     },
     description:{
         type:String,
@@ -15,25 +15,25 @@ const subcategoreySchema=mongoose.Schema({
         minLength:0,
         maxLength:[16, " maximum length is 16 letter"]
     },
-    topics: {
-                type:[mongoose.Schema.ObjectId],
-        ref:"topics",
-        required:[true,"Please,Enter topic Id "]
+    categoreyID: {
+       type:mongoose.Schema.ObjectId,
+        ref:"categorey",
+        required:[true,"Please,Enter categorey Id "]
     }
     
     
 },{Collection:'subcategories'})
 
 
-subcategoreySchema.pre(/^find/,function(next){
-    this.populate({
-        path:"topics",
-        select:"name"
-    });
+// subcategoreySchema.pre(/^find/,function(next){
+//     this.populate({
+//         path:"topics",
+//         select:"name"
+//     });
 
-    next()
+//     next()
 
-})
+// })
 
 subcategoreymongoose=mongoose.model('subcategories',subcategoreySchema)
 module.exports=subcategoreymongoose
