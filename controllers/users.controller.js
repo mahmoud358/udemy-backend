@@ -39,34 +39,40 @@ const getSingleUser = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
     try {
-        const { username, password, firstName, lastName, email, roles } = req.body;
-        const oldUser = await User.findOne({ email })
+        // const { username, password, firstName, lastName, email, roles } = req.body;
+        const sendUser = req.body;
+        
+        const oldUser = await User.findOne({ email:sendUser.email })
         if (oldUser){
             return next(new APIERROR(400, "user already exists"))
 
         }
 
 
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const newUser = new User({
-            username,
-            firstName,
-            password: hashedPassword,
-            lastName,
-            email,
-            roles
+        const hashedPassword = await bcrypt.hash(sendUser.password, 10)
+        sendUser.password=hashedPassword
+        
 
-        })
+        // const newUser = new User({
+        //     username,
+        //     firstName,
+        //     password: hashedPassword,
+        //     lastName,
+        //     email,
+        //     roles
+
+        // })
+        const newUser = new User(sendUser)
         //generate jwt token
 
-        const token = await generateJWT({ email: email, _id: newUser._id, role: newUser.roles,userName:newUser.username,avatar:newUser.avatar })
+        const token = await generateJWT({ email: newUser.email, _id: newUser._id, role: newUser.roles,userName:newUser.username,avatar:newUser.avatar })
         // newUser.token = token;
         
         
         await newUser.save();
         res.status(201).json({ status: "success", data: token })
     } catch (error) {
-        console.error("Error:", error.message);
+        // console.error("Error:", error.message);
 
         next(new APIERROR(400, error.message))
     }

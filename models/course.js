@@ -1,5 +1,5 @@
 const mongoose=require("mongoose");
-
+const validator = require('validator');
 
 let courseSchema=mongoose.Schema({
     name:{
@@ -7,10 +7,17 @@ let courseSchema=mongoose.Schema({
         minLength:[3,"The name must be greater than 3 letters"],
         required:true
     },
-    description:{
+    subDescription:{
         type:String,
-        minLength:[10,"The description must be greater than 10 letters"],
-        required:true
+        validate: {
+            validator: function (value) {
+                const wordCount = value.trim().split(/\s+/).length;
+
+                // Return true if word count is exactly 30
+                return wordCount >= 10;
+            },
+            message:'The subDescription  must be at lest 10 words.'
+          }
     },
     price:{
         type:Number,
@@ -25,8 +32,8 @@ let courseSchema=mongoose.Schema({
         ref:"User"
     },
     certificate:{
-        is_available:{type:Boolean},
-        certificate_template:{type:String}
+        type:Boolean
+        
     },
     topic_id:{
         type:mongoose.Schema.ObjectId,
@@ -39,7 +46,15 @@ let courseSchema=mongoose.Schema({
     category_id:{
         type:mongoose.Schema.ObjectId,
         ref:"categorey"
-    }
+    },
+    image:{
+        type:String
+    },
+    courseGoals:[{type:String}],
+    hours:{type:Number},
+    requirements:[{type:String}]
+
+
 },{ timestamps: true })
 
 let courseModel=mongoose.model("course",courseSchema);
