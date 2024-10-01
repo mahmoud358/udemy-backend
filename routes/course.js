@@ -1,5 +1,5 @@
 const express=require("express");
-const {getCourses,getCourseByID,addCourse,updateCourse,deleteCourse}=require("../controllers/course");
+const {getCourses,getCourseByID,addCourse,updateCourse,deleteCourse,getCoursesByInstructor}=require("../controllers/course");
 let router=express.Router();
 let {auth,restrictTo}=require('../middleware/auth');
 
@@ -10,6 +10,11 @@ const userRoles = require("../utils/user-roles");
 
 router.get('/',getCourses);
 router.get('/:id',getCourseByID);
+router.get('/instructor/:instructor_id', getCoursesByInstructor);
+
+
+
+
 router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),addCourse);
 
 router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateCourse);
