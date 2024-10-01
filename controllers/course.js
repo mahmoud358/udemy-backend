@@ -42,6 +42,7 @@ let getCoursesByInstructor= async function (req, res, next) {
                  next(new APIERROR(500, err.message));
     }
   };
+
   
 
 let addCourse=async function(req,res){

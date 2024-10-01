@@ -26,6 +26,23 @@ let getModuleById = async (req, res, next) => {
     }
 };
 
+
+let getModulesByCourseId = async (req, res, next) => {
+    try {
+        const modules = await moduleModel.find({ course_id: req.params.courseId });
+
+        if (modules.length === 0) {
+            return next(new APIERROR(404, 'No modules found '));
+        }
+
+        res.status(200).json({ status: 'success', data: modules });
+    } catch (error) {
+        next(new APIERROR(404, error.message));
+    }
+};
+
+
+
 // Create a new module
 
 let createModule = async (req, res, next) => {
@@ -73,4 +90,4 @@ let deleteModule = async (req, res, next) => {
         next(new APIERROR(404,err.message));
     }
 };
-module.exports={getAllModules,getModuleById,createModule,updateModule,deleteModule}
+module.exports={getAllModules,getModuleById,createModule,updateModule,deleteModule,getModulesByCourseId}
