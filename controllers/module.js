@@ -6,7 +6,7 @@ const APIERROR=require('../utils/apiError');
 let getAllModules = async (req, res, next) => {
     try {
         const modules = await moduleModel.find();
-        res.status(200).json(modules);
+        res.status(200).json({status:'success',data:modules});
     } catch (error) {
         next(new APIERROR(404,error.message));
     }
@@ -20,7 +20,7 @@ let getModuleById = async (req, res, next) => {
         if(!module){
             return next(new APIERROR(404, 'Module not found'));
         }
-        res.status(200).json(module);
+        res.status(200).json({status:'success',data:module});
     } catch (error) {
         next(new APIERROR(404, 'Module not found'));
     }
@@ -32,7 +32,7 @@ let createModule = async (req, res, next) => {
     try{
         let module=await moduleModel.create(req.body);
         
-        res.status(201).json(module)
+        res.status(201).json({status:'success',data:module})
     }catch(err){
         next(new APIERROR(400,err.message));
     }
@@ -53,7 +53,7 @@ let updateModule = async (req, res, next) => {
         }
 
         
-        res.status(200).json(module)
+        res.status(200).json({status:'success',message:"success update"})
     }catch(err){
         next(new APIERROR(400,err.message));
     }
@@ -68,7 +68,7 @@ let deleteModule = async (req, res, next) => {
         if(!module){
             return next(new APIERROR(404, 'Module not found'));
         }
-        res.status(200).json({message:"succsse delete"});
+        res.status(200).json({status:'success',message:"success delete"});
     }catch(err){
         next(new APIERROR(404,err.message));
     }

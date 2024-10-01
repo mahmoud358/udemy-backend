@@ -4,7 +4,7 @@ const APIERROR=require('../utils/apiError');
 let getAllLessons=async function(req,res,next){
     try{
         let lessons=await lessonModel.find();
-        res.status(200).json({lessons})
+        res.status(200).json({status:'success',data:lessons})
     }catch(err){
         return next(new APIERROR(404,err.message));
 
@@ -18,7 +18,7 @@ let getLessonById=async function(req,res,next){
             return next(new APIERROR(404,"course not found"));
 
         }
-        res.status(200).json({lesson})
+        res.status(200).json({status:'success',data:lesson})
     }catch(err){
         return next(new APIERROR(404,err.message));
         
@@ -44,7 +44,7 @@ let updateLesson=async function(req,res,next){
             return next(new APIERROR(404,"course not found"));
             }
             
-        res.status(200).json(lesson)
+        res.status(200).json({status:'success',message:"success update"})
         
     }catch(err){
         return next(new APIERROR(400,err.message));
@@ -57,7 +57,7 @@ let deleteLesson=async function(req,res,next){
         if(!lesson){
             return next(new APIERROR(404,"course not found"));
         }
-        res.status(200).json({message:"succsse delete"});
+        res.status(200).json({status:'success',message:"success delete"});
         
     }catch(err){
         return next(new APIERROR(400,err.message));
