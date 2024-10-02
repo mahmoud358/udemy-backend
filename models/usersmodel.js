@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema({
   }
   , avatar: {
     type: String,
-    default: "uploads/profile2.jpg"
+    default: "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png"
   },
   Biography: {
     type: String,
