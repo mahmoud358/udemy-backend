@@ -12,11 +12,11 @@ router.get('/:id',getLessonById);
 
 router.get('/module/:moduleId', getLessonsByModuleId);
 
-router.post('/',auth,allowedTo(userRoles.Instructor),createLesson);
+router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),createLesson);
 
-router.put('/:id',auth,allowedTo(userRoles.Instructor),updateLesson);
+router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateLesson);
 
-router.delete('/:id',auth,allowedTo(userRoles.Instructor,userRoles.ADMIN),deleteLesson);
+router.delete('/:id',auth,allowedTo(userRoles.Instructor,userRoles.ADMIN,userRoles.USER),deleteLesson);
 
 module.exports=router;
 

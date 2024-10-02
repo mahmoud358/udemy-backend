@@ -10,7 +10,7 @@ const userRoles = require("../utils/user-roles");
 
 router.get("/",getAllQuestions);
 router.get("/:id",getQuestionById);
-router.post("/",auth,allowedTo(userRoles.Instructor),createQuestion);
-router.put("/:id",auth,allowedTo(userRoles.Instructor),updateQuestion);
-router.delete("/:id",auth,allowedTo(userRoles.Instructor,userRoles.ADMIN),deleteQuestion);
+router.post("/",auth,allowedTo(userRoles.Instructor,userRoles.USER),createQuestion);
+router.put("/:id",auth,allowedTo(userRoles.Instructor,userRoles.USER),updateQuestion);
+router.delete("/:id",auth,allowedTo(userRoles.Instructor,userRoles.ADMIN,userRoles.USER),deleteQuestion);
 module.exports=router;

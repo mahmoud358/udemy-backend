@@ -46,7 +46,7 @@ let createLesson=async function(req,res,next){
     try{
         let lesson=await lessonModel.create(req.body);
         
-        res.status(201).json(lesson)
+        res.status(201).json({status:'success',data:lesson})
         
     }catch(err){
         return next(new APIERROR(400,err.message));
