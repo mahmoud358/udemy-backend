@@ -11,7 +11,15 @@ const questionSchema = mongoose.Schema({
     quiz_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "quiz"
-    }
+    },
+    module_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"module"
+    },
+    course_id:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"course"
+    },
 
 });
 module.exports = mongoose.model("question", questionSchema);
