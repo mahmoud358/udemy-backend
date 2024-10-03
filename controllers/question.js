@@ -18,6 +18,20 @@ let getQuestionById = async function (req, res, next) {
         next(new APIERROR(404, err.message));
     }
 };
+
+let getQuestionsByQuizId = async (req, res, next) => {
+    try {
+        const Questions = await questionModel.find({ module_id: req.params.quizId });
+
+        if (Questions.length === 0) {
+            return next(new APIERROR(404, 'No Questions found '));
+        }
+
+        res.status(200).json({ status: 'success', data: Questions });
+    } catch (error) {
+        next(new APIERROR(404, error.message));
+    }
+};
 let createQuestion = async function (req, res, next) {
     try {
         let question = await questionModel.create(req.body);
@@ -43,4 +57,4 @@ let deleteQuestion = async function (req, res, next) {
         next(new APIERROR(404, err.message));
     }
 };
-module.exports = { getAllQuestions, getQuestionById, createQuestion, updateQuestion, deleteQuestion };
+module.exports = { getAllQuestions, getQuestionById, createQuestion, updateQuestion, deleteQuestion ,getQuestionsByQuizId};
