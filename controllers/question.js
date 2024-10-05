@@ -21,7 +21,7 @@ let getQuestionById = async function (req, res, next) {
 
 let getQuestionsByQuizId = async (req, res, next) => {
     try {
-        const Questions = await questionModel.find({ module_id: req.params.quizId });
+        const Questions = await questionModel.find({ quiz_id: req.params.quizId });
 
         if (Questions.length === 0) {
             return next(new APIERROR(404, 'No Questions found '));
