@@ -12,6 +12,6 @@ router.get("/",getAllQuestions);
 router.get("/:id",getQuestionById);
 router.get("/quiz/:quizId",getQuestionsByQuizId);
 router.post("/",auth,allowedTo(userRoles.Instructor,userRoles.USER),createQuestion);
-router.put("/:id",auth,allowedTo(userRoles.Instructor,userRoles.USER),updateQuestion);
+router.patch("/:id",auth,allowedTo(userRoles.Instructor,userRoles.USER),updateQuestion);
 router.delete("/:id",auth,allowedTo(userRoles.Instructor,userRoles.ADMIN,userRoles.USER),deleteQuestion);
 module.exports=router;
