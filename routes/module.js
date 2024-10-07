@@ -12,11 +12,13 @@ router.get('/:id',getModuleById);
 
 router.get('/course/:courseId', getModulesByCourseId);
 
-router.post('/',auth,allowedTo(userRoles.Instructor),createModule);
+router.get('/course/:courseId', getModulesByCourseId);
 
-router.patch('/:id',auth,allowedTo(userRoles.Instructor),updateModule);
+router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),createModule);
 
-router.delete('/:id',auth,allowedTo(userRoles.Instructor,userRoles.ADMIN),deleteModule);
+router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateModule);
+
+router.delete('/:id',auth,allowedTo(userRoles.Instructor,userRoles.ADMIN,userRoles.USER),deleteModule);
 
 
 
