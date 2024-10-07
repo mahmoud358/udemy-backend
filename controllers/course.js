@@ -26,6 +26,27 @@ let getCourseByID=async function(req,res,next){
     }
 }
 
+let searchCoursesByName = async function (req, res, next) {
+    const { name } = req.query;
+
+    if (!name) {
+        return res.status(400).json({ status: "fail", message: "Please provide a course name to search." });
+    }
+
+    try {
+        let courses = await courseModel.find({ name: { $regex: name, $options: "i" } }); 
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found with that name." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+
 
 let getCoursesByInstructor= async function (req, res, next) {
        const { instructor_id } = req.params;
@@ -136,4 +157,6 @@ let deleteCourse=async function(req,res,next){
 
 
 
-module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse ,getCoursesByInstructor,getCoursesByTopic,getCoursesByCategory,getCoursesBySubCategory}
+module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse ,getCoursesByInstructor,getCoursesByTopic,getCoursesByCategory,getCoursesBySubCategory,
+    searchCoursesByName
+}
