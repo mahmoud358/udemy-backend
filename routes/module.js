@@ -12,8 +12,6 @@ router.get('/:id',getModuleById);
 
 router.get('/course/:courseId', getModulesByCourseId);
 
-router.get('/course/:courseId', getModulesByCourseId);
-
 router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),createModule);
 
 router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateModule);

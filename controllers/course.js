@@ -43,6 +43,56 @@ let getCoursesByInstructor= async function (req, res, next) {
     }
   };
 
+  let getCoursesByTopic = async function (req, res, next) {
+    const { topic_id } = req.params;
+
+    try {
+        let courses = await courseModel.find({ topic_id });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found for this topic." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+let getCoursesByCategory = async function (req, res, next) {
+    const { category_id } = req.params;
+
+    try {
+        let courses = await courseModel.find({ category_id });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found for this category." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+let getCoursesBySubCategory = async function (req, res, next) {
+    const { subcategory_id } = req.params;
+
+    try {
+        let courses = await courseModel.find({ subcategory_id });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found for this subcategory." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+
+
   
 
 let addCourse=async function(req,res){
@@ -86,4 +136,4 @@ let deleteCourse=async function(req,res,next){
 
 
 
-module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse ,getCoursesByInstructor}
+module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse ,getCoursesByInstructor,getCoursesByTopic,getCoursesByCategory,getCoursesBySubCategory}

@@ -17,7 +17,7 @@ let courseSchema=mongoose.Schema({
                 return wordCount >= 10;
             },
             message:'The subDescription  must be at lest 10 words.'
-          }
+          }  
     },
     price:{
         type:Number,

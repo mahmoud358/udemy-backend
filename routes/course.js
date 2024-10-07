@@ -1,5 +1,5 @@
 const express=require("express");
-const {getCourses,getCourseByID,addCourse,updateCourse,deleteCourse,getCoursesByInstructor}=require("../controllers/course");
+const {getCourses,getCourseByID,addCourse,updateCourse,deleteCourse,getCoursesByInstructor,getCoursesByTopic,getCoursesByCategory,getCoursesBySubCategory}=require("../controllers/course");
 let router=express.Router();
 let {auth,restrictTo}=require('../middleware/auth');
 
@@ -11,6 +11,9 @@ const userRoles = require("../utils/user-roles");
 router.get('/',getCourses);
 router.get('/:id',getCourseByID);
 router.get('/instructor/:instructor_id', getCoursesByInstructor);
+router.get('/topic/:topic_id', getCoursesByTopic);
+router.get('/category/:category_id', getCoursesByCategory);
+router.get('/subcategory/:subcategory_id', getCoursesBySubCategory);
 
 
 
