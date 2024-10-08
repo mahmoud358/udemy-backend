@@ -1,14 +1,14 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 const validator = require('validator');
 
-let courseSchema=mongoose.Schema({
-    name:{
-        type:String,
-        minLength:[3,"The name must be greater than 3 letters"],
-        required:true
+let courseSchema = mongoose.Schema({
+    name: {
+        type: String,
+        minLength: [3, "The name must be greater than 3 letters"],
+        required: true
     },
-    subDescription:{
-        type:String,
+    subDescription: {
+        type: String,
         validate: {
             validator: function (value) {
                 const wordCount = value.trim().split(/\s+/).length;
@@ -16,47 +16,47 @@ let courseSchema=mongoose.Schema({
                 // Return true if word count is exactly 30
                 return wordCount >= 10;
             },
-            message:'The subDescription  must be at lest 10 words.'
-          }  
+            message: 'The subDescription  must be at lest 10 words.'
+        }
     },
-    price:{
-        type:Number,
-        default:0
+    price: {
+        type: Number,
+        default: 0
     },
-    is_progress_limited:{
-        type:Boolean,
-        default:false
+    is_progress_limited: {
+        type: Boolean,
+        default: false
     },
-    instructor_id:{
-        type:mongoose.Schema.ObjectId,
-        ref:"User"
+    instructor_id: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User"
     },
-    certificate:{
-        type:Boolean
-        
+    certificate: {
+        type: Boolean
+
     },
-    topic_id:{
-        type:mongoose.Schema.ObjectId,
-        ref:"topics"
+    topic_id: {
+        type: mongoose.Schema.ObjectId,
+        ref: "topics"
     },
-    subcategory_id:{
-        type:mongoose.Schema.ObjectId,
-        ref:"subcategories"
+    subcategory_id: {
+        type: mongoose.Schema.ObjectId,
+        ref: "subcategories"
     },
-    category_id:{
-        type:mongoose.Schema.ObjectId,
-        ref:"categorey"
+    category_id: {
+        type: mongoose.Schema.ObjectId,
+        ref: "categorey"
     },
-    image:{
-        type:String
+    image: {
+        type: String
     },
-    courseGoals:[{type:String}],
-    hours:{type:Number},
-    requirements:[{type:String}]
+    courseGoals: [{ type: String }],
+    hours: { type: Number },
+    requirements: [{ type: String }]
 
 
-},{ timestamps: true })
+}, { timestamps: true })
 
-let courseModel=mongoose.model("course",courseSchema);
+let courseModel = mongoose.model("course", courseSchema);
 
-module.exports=courseModel;
+module.exports = courseModel;
