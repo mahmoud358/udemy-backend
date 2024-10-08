@@ -61,6 +61,9 @@ getTopicsByCategoryID = async (req, res, next) => {
 //     }
 // }
 
+
+
+
 getTopicById = async (req, res, next) => {
     const { topicID } = req.params;
     try {
@@ -81,6 +84,25 @@ getTopicById = async (req, res, next) => {
         return next(new APIERROR(400, err.message));
     }
 };
+
+
+
+getTopicByName = async (req, res, next) => {
+    const { name } = req.params;
+
+    try {
+        const topic = await topicListModel.findOne({ name });
+
+        if (!topic) {
+            return next(new APIERROR(404, "Topic not found"));
+        }
+
+        res.status(200).json({ status: "success", data: topic });
+    } catch (err) {
+        return next(new APIERROR(400, err.message));
+    }
+};
+
 
 
 
@@ -129,9 +151,7 @@ patchTopoicById = async (req, res, next) => {
 
 
 
-
-
 // ............................................
 
-module.exports = { saveTopic, getTopicBysubCategoreyID, getTopicById, deleteTopicById, patchTopoicById, getTopicsByCategoryID }
+module.exports = { saveTopic, getTopicBysubCategoreyID, getTopicById, deleteTopicById, patchTopoicById, getTopicsByCategoryID , getTopicByName }
 
