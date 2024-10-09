@@ -84,7 +84,12 @@ let getCoursesByCategory = async function (req, res, next) {
     const { category_id } = req.params;
 
     try {
-        let courses = await courseModel.find({ category_id });
+        let courses = await courseModel.find({ category_id })
+        .populate({
+            path: 'instructor_id',
+            select: 'username email' ,
+            
+        });
 
         if (courses.length === 0) {
             return res.status(404).json({ status: "fail", message: "No courses found for this category." });
@@ -100,7 +105,11 @@ let getCoursesBySubCategory = async function (req, res, next) {
     const { subcategory_id } = req.params;
 
     try {
-        let courses = await courseModel.find({ subcategory_id });
+        let courses = await courseModel.find({ subcategory_id })
+        .populate({
+            path: 'instructor_id',
+            select: 'username email'
+        });
 
         if (courses.length === 0) {
             return res.status(404).json({ status: "fail", message: "No courses found for this subcategory." });
