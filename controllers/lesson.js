@@ -26,11 +26,27 @@ let getLessonById=async function(req,res,next){
     }
 };
 
+
+
+let getLessonsByModuleId = async (req, res, next) => {
+    try {
+        const lessons = await lessonModel.find({ module_id: req.params.moduleId });
+
+        if (lessons.length === 0) {
+            return next(new APIERROR(404, 'No lessons found '));
+        }
+
+        res.status(200).json({ status: 'success', data: lessons });
+    } catch (error) {
+        next(new APIERROR(404, error.message));
+    }
+};
+
 let createLesson=async function(req,res,next){
     try{
         let lesson=await lessonModel.create(req.body);
         
-        res.status(201).json(lesson)
+        res.status(201).json({status:'success',data:lesson})
         
     }catch(err){
         return next(new APIERROR(400,err.message));
@@ -64,4 +80,4 @@ let deleteLesson=async function(req,res,next){
         }
 };
 
-module.exports={getAllLessons,getLessonById,createLesson,updateLesson,deleteLesson};
+module.exports={getAllLessons,getLessonById,createLesson,updateLesson,deleteLesson,getLessonsByModuleId};

@@ -26,6 +26,95 @@ let getCourseByID=async function(req,res,next){
     }
 }
 
+let searchCoursesByName = async function (req, res, next) {
+    const { name } = req.query;
+
+    if (!name) {
+        return res.status(400).json({ status: "fail", message: "Please provide a course name to search." });
+    }
+
+    try {
+        let courses = await courseModel.find({ name: { $regex: name, $options: "i" } }); 
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found with that name." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+
+
+let getCoursesByInstructor= async function (req, res, next) {
+       const { instructor_id } = req.params;
+  
+    try {
+      let courses = await courseModel.find({ instructor_id });
+    
+      if (courses.length === 0) {
+           return res.status(404).json({ status:"fail", message: "No courses found for this instructor." });
+      }
+  
+      res.status(200).json({ status:"success", data: courses });
+    } catch (err) {
+                 next(new APIERROR(500, err.message));
+    }
+  };
+
+  let getCoursesByTopic = async function (req, res, next) {
+    const { topic_id } = req.params;
+
+    try {
+        let courses = await courseModel.find({ topic_id });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found for this topic." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+let getCoursesByCategory = async function (req, res, next) {
+    const { category_id } = req.params;
+
+    try {
+        let courses = await courseModel.find({ category_id });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found for this category." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+let getCoursesBySubCategory = async function (req, res, next) {
+    const { subcategory_id } = req.params;
+
+    try {
+        let courses = await courseModel.find({ subcategory_id });
+
+        if (courses.length === 0) {
+            return res.status(404).json({ status: "fail", message: "No courses found for this subcategory." });
+        }
+
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(500, err.message));
+    }
+};
+
+
+
+  
 
 let addCourse=async function(req,res){
     req.body.instructor_id=req.id;
@@ -68,4 +157,91 @@ let deleteCourse=async function(req,res,next){
 
 
 
-module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse}
+let filterCourses = async function (req, res, next) {
+    try {
+        
+        const { price, hours, category_id, subcategory_id, topic_id } = req.query;
+        let filter = {};
+
+        
+        if (price) {
+            if (price === "free") {
+                filter.price = 0;  
+            } else if (price === "paid") {
+                filter.price = { $gt: 0 };  
+            }
+        }
+
+        
+        if (hours) {
+            console.log(" hours :", hours);
+        
+            const numericHours = Number(hours);
+            console.log(" numeric:", numericHours); 
+        
+            
+                if (numericHours >= 0 && numericHours <= 1) {
+                    
+                    filter.hours = { $gte: 0, $lte: 1 };
+
+
+                } else if (numericHours > 1 && numericHours <= 3) {
+                    
+                    filter.hours = { $gt: 1, $lte: 3 }; 
+
+
+
+                } else if (numericHours > 3 && numericHours <= 6) {
+                    
+                    filter.hours = { $gt: 3, $lte: 6 }; 
+
+
+                } else if (numericHours > 6 && numericHours <= 17) {
+                    
+                    filter.hours = { $gt: 6, $lte: 17 }; 
+
+
+                } else if (numericHours > 17) {
+                    
+                    filter.hours = { $gt: 17 };
+
+
+                } else {
+                    return next(new APIERROR(400, "Invalid"));
+                }
+        }
+        
+        
+
+        
+        if (category_id) {
+            filter.category_id = category_id;
+        }
+
+        
+        if (subcategory_id) {
+            filter.subcategory_id = subcategory_id;
+        }
+
+        
+        if (topic_id) {
+            filter.topic_id = topic_id;
+        }
+
+
+        console.log(filter);
+        const courses = await courseModel.find(filter);
+
+        
+        res.status(200).json({ status: "success", data: courses });
+    } catch (err) {
+        next(new APIERROR(404, err.message));
+    }
+};
+
+
+
+
+module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse ,getCoursesByInstructor,getCoursesByTopic,getCoursesByCategory,getCoursesBySubCategory,
+    searchCoursesByName ,filterCourses
+}

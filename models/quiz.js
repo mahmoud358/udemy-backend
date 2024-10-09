@@ -12,11 +12,7 @@ const quizSchema=mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"course"
     },
-    question_ids:[
-        {
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"question"
-    }]
+   
         
 });
 module.exports=mongoose.model("quiz",quizSchema);
