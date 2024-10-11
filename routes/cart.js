@@ -7,14 +7,12 @@ let {auth,restrictTo}=require('../middleware/auth');
 const allowedTo = require("../middleware/allowedTo");     
 const userRoles = require("../utils/user-roles"); 
 
-const {addCart,getCart,updateCart,removeCart}= require('../controllers/cart')
+const {addToCart,viewCart,removeFromCart}= require('../controllers/cart')
 
-router.post('/',auth,allowedTo(userRoles.USER),addCart)
+router.post('/:course_id',auth,allowedTo(userRoles.USER),addToCart)
 
-router.get('/',auth,allowedTo(userRoles.USER),getCart)
+router.get('/',auth,allowedTo(userRoles.USER),viewCart)
 
-router.put('/:course_id',auth,allowedTo(userRoles.USER),updateCart)
-
-router.delete('/:course_id',auth,allowedTo(userRoles.USER),removeCart)
+router.delete('/:course_id',auth,allowedTo(userRoles.USER),removeFromCart)
 
 module.exports=router

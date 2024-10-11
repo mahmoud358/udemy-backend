@@ -1,51 +1,105 @@
-const cartInfo= require('../models/cart')
+const CourseModel = require('../models/course');
+const CartModel= require('../models/cart')
+const APIERROR = require("../utils/apiError")
 
- let addCart= async(req,res)=>{
-    let userId=req.id
-    let coursId=req.params.course_ids
-    
-    let cartItem=new cartInfo({userId,coursId})
-    try{
-        let result=await cartItem.save()
-        res.status(201).json(result)
-    }catch(err){
-        res.status(400).json(err)
+const addToCart = async (req, res, next) => {
+    const userId = req.id;  
+  const courseId = req.params.course_id; 
+
+  try {
+      
+      const course = await CourseModel.findById(courseId);
+      if (!course) {
+          return next(new APIERROR(404, "Course not found"));
+      }
+
+     
+      let cart = await CartModel.findOne({ userId, status: 'inProgress' });
+
+      if (cart) {
+          
+          if (cart.course_ids.includes(courseId)) {
+                     return next(new APIERROR(400, "Course is already in the cart"));
+          } else {
+             
+              cart.course_ids.push(courseId);
+              cart.totalPrice += course.price;
+          }
+      } else {
+          
+              cart = new CartModel({
+                      userId,
+                    course_ids: [courseId],
+                     totalPrice: course.price,
+                  status: 'inProgress'
+          });
+      }
+
+     
+      const savedCart = await cart.save();
+      res.status(201).json({ status: "success", data: savedCart });
+
+  } catch (error) {
+      return next(new APIERROR(500, error.message)); 
+  }
+};
+
+
+const viewCart = async (req, res, next) => {
+    const userId = req.id;
+
+    try {
+        
+        const cart = await CartModel.findOne({ userId, status: 'inProgress' })
+            .populate('course_ids');  
+
+              if (!cart) {
+               return next(new APIERROR(404, "No active cart found"));
+        }
+
+        res.status(200).json({ status: "success", data: cart });
+    } catch (error) {
+        return next(new APIERROR(500, error.message)); 
+                }
+};
+
+
+
+const removeFromCart = async (req, res, next) => {
+    const userId = req.id;
+    const courseId = req.params.course_id;
+
+    try {
+        const cart = await CartModel.findOne({ userId, status: 'inProgress' });
+        if (!cart) {
+                 return next(new APIERROR(404, "No active cart found"));
+        }
+
+        
+         const courseIndex = cart.course_ids.indexOf(courseId);
+            if (courseIndex === -1) {
+                return next(new APIERROR(400, "Course not found in the cart"));
+        }
+                     cart.course_ids.splice(courseIndex, 1);
+
+                 const course = await CourseModel.findById(courseId);
+                  cart.totalPrice -= course.price;
+
+                 
+                  
+        await cart.save();
+        res.status(200).json({ status: "success", data: cart });
+    } catch (error) {
+        return next(new APIERROR(500, error.message)); 
     }
-}
-
- let getCart =async(req,res)=>{
-    let userId=req.id
-    try{
-        let result=await cartInfo.find({userId})
-        res.json(result)
-    }catch(err){
-        res.status(500).json(err)
-    }
-}
- let updateCart=async(req,res)=>{
-    let userId=req.id
-    let courseId=req.params.course_id
-    let quantity=req.body.quantity
-    try{
-        let result=await cartInfo.findOneAndUpdate({userId,courseId},{quantity},{new:true})
-        if (!result) return res.status(404).json({message:"Course not found in cart"})
-        res.json(result)
-    }catch(err){
-        res.status(400).json(err)
-    }
-}
-
-let removeCart=async(req,res)=>{
-    let userId=req.id
-    let courseId=req.params.course_id
-    try{
-        let result=await cartInfo.findOneAndDelete({userId,courseId})
-        if (!result) return res.status(404).json({message:"Course not found in cart"})
-        res.json({message:"Course removed from cart successfully"})
-    }catch(err){
-        res.status(400).json(err)
-    }
-}
+};
 
 
-module.exports={addCart,getCart,updateCart,removeCart}
+
+
+
+
+
+
+
+module.exports={addToCart,viewCart,removeFromCart}

@@ -10,8 +10,16 @@ let cartSchema = mongoose.Schema({
             ref:'course',
             required:true
         }
-    ]
-
+    ],
+totalPrice: {
+    type: Number,
+    default: 0  
+},
+status: {
+    type: String,
+    enum: ['inProgress', 'completed'],
+    default: 'inProgress'
+}
 })
 
 const CartModels= mongoose.model('carts', cartSchema)
