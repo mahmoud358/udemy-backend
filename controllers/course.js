@@ -6,25 +6,51 @@ const APIERROR=require('../utils/apiError');
 
 let getCourses=async function(req,res,next){
     try{
-        let courses=await courseModel.find();
+        let courses=await courseModel.find().populate({
+            path: 'instructor_id',
+            select: 'username email'
+        });
         res.status(200).json({status: "success",data:courses})
+
     }catch(err){
        next(new APIERROR(404,err.message));
 
     }
 }
-let getCourseByID=async function(req,res,next){
-    const {id}=req.params 
-    console.log(req.id);
+// let getCourseByID=async function(req,res,next){
+//     const {id}=req.params 
+//     console.log(req.id);
     
-    try{
-        let course=await courseModel.findById(id);
-        res.status(200).json({status: "success",data:course})
-    }catch(err){
-       next(new APIERROR(404,err.message));
+//     try{
+//         let course=await courseModel.findById(id);
+//         res.status(200).json({status: "success",data:course}).populate({
+//             path: 'instructor_id',
+//             select: 'username email'
+//         });
+//     }catch(err){
+//        next(new APIERROR(404,err.message));
+//     }
+// }
 
+let getCourseByID = async function(req, res, next) {
+    const { id } = req.params;
+
+    try {
+        let course = await courseModel.findById(id).populate({
+            path: 'instructor_id',
+            select: 'username email'
+        });
+
+        if (!course) {
+            return next(new APIERROR(404, "Course not found"));
+        }
+
+        return res.status(200).json({ status: "success", data: course });
+    } catch (err) {
+        return next(new APIERROR(404, err.message));
     }
-}
+};
+
 
 let searchCoursesByName = async function (req, res, next) {
     const { name } = req.query;
