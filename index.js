@@ -22,6 +22,7 @@ const quizRouter = require('./routes/quiz');
 const questionRouter = require('./routes/question');
 const certificateRouter = require('./routes/certificate');
 const admin=require('./routes/admin')
+const payment = require('./routes/payment')
 let cart=require('./routes/cart')
 let coupon=require('./routes/coupon')
 let categoreyRouter=require('./routes/categoreyRoute')
@@ -38,6 +39,7 @@ app.use('/topic',topicRouter)
 app.use('/admin',admin)
 app.use('/cart',cart)
 app.use('/coupon',coupon)
+app.use('/payment',payment)
 
 
 
