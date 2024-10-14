@@ -96,7 +96,14 @@ const getAllUserPayments = async (req, res, next) => {
     const userId = req.id;  
 
     try {
-        const payments = await PaymentModel.find({ userId }).populate('course_ids');
+        const payments = await PaymentModel.find({ userId }) .populate({
+            path: 'course_ids',
+            populate: {
+                path: 'instructor_id',  
+                select: 'username '  
+            }
+        });
+
         if (!payments.length) {
             return next(new APIERROR(404, "No payments found"));
         }
