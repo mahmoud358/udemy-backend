@@ -52,7 +52,9 @@ let courseSchema = mongoose.Schema({
     },
     courseGoals: [{ type: String }],
     hours: { type: Number },
-    requirements: [{ type: String }]
+    requirements: [{ type: String }],
+    reviews: [{ type: mongoose.Schema.ObjectId, ref: "reviews" }],
+    rating: { type: Number, default: 0 }
 
 
 }, { timestamps: true })
