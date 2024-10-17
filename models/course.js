@@ -3,20 +3,37 @@ const validator = require('validator');
 
 let courseSchema = mongoose.Schema({
     name: {
-        type: String,
-        minLength: [3, "The name must be greater than 3 letters"],
-        required: true
+        en: {
+            type: String,
+            minLength: [3, "The English name must be at least 3 characters long"],
+            required: true
+        },
+        ar: {
+            type: String,
+            minLength: [3, "اسم الدورة باللغة العربية يجب أن يكون على الأقل 3 أحرف"],
+            required: true
+        }
     },
     subDescription: {
-        type: String,
-        validate: {
-            validator: function (value) {
-                const wordCount = value.trim().split(/\s+/).length;
-
-                // Return true if word count is exactly 30
-                return wordCount >= 10;
-            },
-            message: 'The subDescription  must be at lest 10 words.'
+        en: {
+            type: String,
+            validate: {
+                validator: function (value) {
+                    const wordCount = value.trim().split(/\s+/).length;
+                    return wordCount >= 10;
+                },
+                message: 'The English subDescription must be at least 10 words.'
+            }
+        },
+        ar: {
+            type: String,
+            validate: {
+                validator: function (value) {
+                    const wordCount = value.trim().split(/\s+/).length;
+                    return wordCount >= 10;
+                },
+                message: 'الوصف الفرعي باللغة العربية يجب أن يكون على الأقل 10 كلمات.'
+            }
         }
     },
     price: {
@@ -50,9 +67,15 @@ let courseSchema = mongoose.Schema({
     image: {
         type: String
     },
-    courseGoals: [{ type: String }],
+    courseGoals: [{
+        en: { type: String },
+        ar: { type: String }
+    }],
     hours: { type: Number },
-    requirements: [{ type: String }],
+    requirements: [{
+        en: { type: String },
+        ar: { type: String }
+    }],
     reviews: [{ type: mongoose.Schema.ObjectId, ref: "reviews" }],
     rating: { type: Number, default: 0 }
 
