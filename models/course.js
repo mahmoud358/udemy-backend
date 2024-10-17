@@ -67,15 +67,15 @@ let courseSchema = mongoose.Schema({
     image: {
         type: String
     },
-    courseGoals: [{
-        en: { type: String },
-        ar: { type: String }
-    }],
+    courseGoals: {
+        en: [{ type: String }],
+        ar: [{ type: String }]
+    },
     hours: { type: Number },
-    requirements: [{
-        en: { type: String },
-        ar: { type: String }
-    }],
+    requirements: {
+        en: [{ type: String }],
+        ar: [{ type: String }]
+    },
     reviews: [{ type: mongoose.Schema.ObjectId, ref: "reviews" }],
     rating: { type: Number, default: 0 }
 
