@@ -66,7 +66,7 @@ let searchCoursesByName = async function (req, res, next) {
     }
 
     try {
-        let courses = await courseModel.find({ name: { $regex: name, $options: "i" } }); 
+        let courses = await courseModel.find({ "name.en": { $regex: name, $options: "i" } }); 
 
         if (courses.length === 0) {
             return res.status(404).json({ status: "fail", message: "No courses found with that name." });
