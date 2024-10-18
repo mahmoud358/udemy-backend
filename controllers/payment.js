@@ -2,6 +2,7 @@ const PaymentModel = require('../models/payment');
 const CartModel = require('../models/cart');
 const { client } = require('../utils/paypalConfig');
 const paypal = require('@paypal/checkout-server-sdk');
+const { payoutsClient ,paypalPayoutsSdk } = require('../utils/paypalConfig');
 
 const completePayment = async (req, res) => {
     const userId = req.id;
@@ -10,6 +11,10 @@ const completePayment = async (req, res) => {
     try {
         const cart = await CartModel.findOne({ userId, status: 'inProgress' }).populate('course_ids');
         if (!cart) return res.status(404).json({ message: "No active cart found" });
+
+        const totalAmount = cart.totalPrice;
+        const platformShare = totalAmount * 0.30;
+        const instructorShare = totalAmount * 0.70;
 
         if (paymentMethod === 'paypal') {
             let request = new paypal.orders.OrdersCreateRequest();
@@ -25,7 +30,8 @@ const completePayment = async (req, res) => {
                 application_context: {
                     return_url: `${process.env.FRONTEND_URL}/payment/success`,
                     cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
-                    user_action: "PAY_NOW"
+                    user_action: "PAY_NOW",
+                    brand_name:"Udemy"
                 }
             });
 
@@ -38,8 +44,11 @@ const completePayment = async (req, res) => {
         } else {
             const payment = new PaymentModel({
                 userId,
+                instructor_id: cart.course_ids[0].instructor_id, 
                 course_ids: cart.course_ids,
                 totalAmount: cart.totalPrice,
+                platformShare,
+                instructorShare,
                 paymentMethod
             });
 
@@ -67,10 +76,18 @@ const capturePayPalOrder = async (req, res) => {
                 const cart = await CartModel.findOne({ userId: req.id }).populate('course_ids');
                 if (!cart) return res.status(404).json({ message: "No active cart found" });
 
+
+                const totalAmount = cart.totalPrice;
+                const platformShare = totalAmount * 0.30;
+                const instructorShare = totalAmount * 0.70;
+
                 const payment = new PaymentModel({
                     userId: req.id,
                     course_ids: cart.course_ids,
+                    instructor_id: cart.course_ids[0].instructor_id,
                     totalAmount: cart.totalPrice,
+                    platformShare,
+                    instructorShare,
                     paymentMethod: 'paypal',
                     paymentStatus: 'successful',
                     orderId
@@ -114,5 +131,65 @@ const getAllUserPayments = async (req, res, next) => {
     }
 };
 
-module.exports = { completePayment, capturePayPalOrder, getAllUserPayments };
+
+
+const triggerInstructorPayout = async (req, res) => {
+    const paymentId = req.params.paymentId;
+
+    try {
+        
+        const payment = await PaymentModel.findById(paymentId).populate('instructor_id');
+        if (!payment) return res.status(404).json({ message: "Payment not found" });
+        if (payment.instructorPaid) return res.status(400).json({ message: "Instructor has already been paid" });
+
+        // Use a static PayPal email for testing
+       // const instructorPaypalEmail = 'sb-zohjr33335588@business.example.com';  // Test email for PayPal sandbox
+
+
+      const instructorPaypalEmail = payment.instructor_id.paypalEmail; 
+        if (!instructorPaypalEmail) return res.status(400).json({ message: "Instructor PayPal email not found" });
+
+    
+        let request = new paypalPayoutsSdk.payouts.PayoutsPostRequest();
+        request.requestBody({
+            sender_batch_header: {
+                recipient_type: "EMAIL",
+                email_message: "Instructor Payout",
+                note: "Thank you for using our platform",
+                sender_batch_id: `Payout-${Date.now()}`, 
+                email_subject: "Payout Received!"
+            },
+            items: [{
+                recipient_type: "EMAIL",
+                amount: {
+                    value: payment.instructorShare.toFixed(2), 
+                    currency: "USD" 
+                },
+                receiver: instructorPaypalEmail, 
+                note: "Payout for courses",
+                sender_item_id: `PayoutItem-${Date.now()}` 
+            }]
+        });
+
+        
+        const payoutResponse = await payoutsClient.execute(request);
+
+        
+        if (payoutResponse.statusCode === 201) {
+            
+            payment.instructorPaid = true;
+            await payment.save();
+
+            res.status(200).json({ message: "Payout completed successfully", payoutResponse });
+        } else {
+            res.status(400).json({ message: "Failed to send payout" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: ` adwdccada addadh${error.message}` });
+    }
+};
+
+
+
+module.exports = { completePayment, capturePayPalOrder, getAllUserPayments,triggerInstructorPayout };
 
