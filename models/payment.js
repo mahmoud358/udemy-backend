@@ -11,10 +11,27 @@ const paymentSchema = mongoose.Schema({
         ref: 'course',
         required: true
     }],
+    instructor_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     totalAmount: {
         type: Number,
         required: true
     },
+    platformShare: {  
+        type: Number,
+        required: true
+    },
+    instructorShare: {  
+        type: Number,
+        required: true
+    },
+    instructorPayoutStatus: {  
+        type: String,
+        enum: ['pending', 'paid'],
+        default: 'pending'}
+    ,
     paymentDate: {
         type: Date,
         default: Date.now
@@ -28,6 +45,14 @@ const paymentSchema = mongoose.Schema({
         type: String,
         enum: ['successful', 'failed'],
         default: 'successful'
+    },
+    
+    instructorPaid: {
+        type: Boolean,
+        default: false 
+    },
+    orderId: {
+        type: String 
     }
 });
 

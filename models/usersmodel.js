@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: [validator.isEmail, 'Invalid email address']
   },
+  paypalEmail: {
+    type: String,
+    required: false 
+},
   dob: {
     type: Date,
   },

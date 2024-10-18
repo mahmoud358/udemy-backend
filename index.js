@@ -66,25 +66,6 @@ app.use(function (error, req, res, next) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.listen(8000, () => {
   console.log("port is start");
 
