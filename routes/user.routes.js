@@ -26,6 +26,8 @@ router.get("/",userscontroller.getAllUsers );
 
   
  router.put("/updatePassword",auth,allowedTo(userRoles.USER,userRoles.Instructor),userscontroller.updatePassword);
+
+ 
  router.post("/forgotPassword",userscontroller.forgotPassword);
 
  
