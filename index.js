@@ -28,6 +28,8 @@ let coupon=require('./routes/coupon')
 let categoreyRouter=require('./routes/categoreyRoute')
 let subcategoreyRouter=require('./routes/subcategoreyroutes')
 let topicRouter=require('./routes/topicRoutes')
+let wishlistRouter=require('./routes/wishlist')
+let reviewRouter=require('./routes/review')
 // let certificateRouter=require('./routes/certificateroutes')
 
 app.use("/user",userRouter)
@@ -35,12 +37,12 @@ app.use('/categorey',categoreyRouter)
 app.use('/subcategorey',subcategoreyRouter)
 app.use('/topic',topicRouter)
 // app.use('/certificate',certificateRouter)
-
+app.use('/wishlist',wishlistRouter)
 app.use('/admin',admin)
 app.use('/cart',cart)
 app.use('/coupon',coupon)
 app.use('/payment',payment)
-
+app.use('/review',reviewRouter)
 
 
 app.use('/course', courseRouter);

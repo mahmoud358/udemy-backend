@@ -6,10 +6,13 @@ const APIERROR=require('../utils/apiError');
 
 let getCourses=async function(req,res,next){
     try{
-        let courses=await courseModel.find().populate({
+        let courses=await courseModel.find().populate([{
             path: 'instructor_id',
             select: 'username email'
-        });
+        },{
+            path: 'reviews',
+            select: 'rating reviewText userName'
+        }]);
         res.status(200).json({status: "success",data:courses})
 
     }catch(err){
@@ -36,10 +39,13 @@ let getCourseByID = async function(req, res, next) {
     const { id } = req.params;
 
     try {
-        let course = await courseModel.findById(id).populate({
+        let course = await courseModel.findById(id).populate([{
             path: 'instructor_id',
             select: 'username email'
-        });
+        },{
+            path: 'reviews',
+            select: 'rating reviewText userName'
+        }]);
 
         if (!course) {
             return next(new APIERROR(404, "Course not found"));
@@ -94,7 +100,13 @@ let getCoursesByInstructor= async function (req, res, next) {
     const { topic_id } = req.params;
 
     try {
-        let courses = await courseModel.find({ topic_id });
+        let courses = await courseModel.find({ topic_id }).populate([{
+            path: 'instructor_id',
+            select: 'username email'
+        },{
+            path: 'reviews',
+            select: 'rating reviewText userName'
+        }]);
 
         if (courses.length === 0) {
             return res.status(404).json({ status: "fail", message: "No courses found for this topic." });
@@ -111,11 +123,13 @@ let getCoursesByCategory = async function (req, res, next) {
 
     try {
         let courses = await courseModel.find({ category_id })
-        .populate({
+        .populate([{
             path: 'instructor_id',
-            select: 'username email' ,
-            
-        });
+            select: 'username email'
+        },{
+            path: 'reviews',
+            select: 'rating reviewText userName'
+        }]);
 
         if (courses.length === 0) {
             return res.status(404).json({ status: "fail", message: "No courses found for this category." });
@@ -132,10 +146,13 @@ let getCoursesBySubCategory = async function (req, res, next) {
 
     try {
         let courses = await courseModel.find({ subcategory_id })
-        .populate({
+        .populate([{
             path: 'instructor_id',
             select: 'username email'
-        });
+        },{
+            path: 'reviews',
+            select: 'rating reviewText userName'
+        }]);
 
         if (courses.length === 0) {
             return res.status(404).json({ status: "fail", message: "No courses found for this subcategory." });
@@ -254,7 +271,13 @@ let filterCourses = async function (req, res, next) {
 
 
         console.log(filter);
-        const courses = await courseModel.find(filter);
+        const courses = await courseModel.find(filter).populate([{
+            path: 'instructor_id',
+            select: 'username email'
+        },{
+            path: 'reviews',
+            select: 'rating reviewText userName'
+        }]);
 
 
         res.status(200).json({ status: "success", data: courses });
