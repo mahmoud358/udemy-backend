@@ -20,24 +20,6 @@ router.get('/subcategory/:subcategory_id', getCoursesBySubCategory);
 router.get('/:id',getCourseByID);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),addCourse);
 
 router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateCourse);
