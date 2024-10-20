@@ -183,7 +183,7 @@ const forgotPassword= async(req,res)=>{
     //   console.log("Token Expiration (stored in DB):", user.resetPasswordExpires);
 
 
-      const resetUrl = `${req.protocol}://${req.get('host')}/user/resetPassword/${resetToken}`    
+      const resetUrl = `https://udemy-next-nu.vercel.app/user/resetPassword/${resetToken}`    
     //   const message = `We have received a password reset request,Please user the below link to reset your password \n\n${resetUrl} this reset link will be valid only for 15 minutes `
     
     const message = `
