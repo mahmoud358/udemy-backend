@@ -45,7 +45,7 @@ let getCourseByID = async function(req, res, next) {
             select: 'username email'
         },{
             path: 'reviews',
-            select: 'rating reviewText userName'
+            select: 'rating reviewText userName createdAt'
         }]);
 
         if (!course) {
@@ -152,7 +152,7 @@ let getCoursesBySubCategory = async function (req, res, next) {
             select: 'username email'
         },{
             path: 'reviews',
-            select: 'rating reviewText userName'
+            select: 'rating reviewText userName createdAt'
         }]);
 
         if (courses.length === 0) {
