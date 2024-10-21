@@ -16,7 +16,7 @@ let getCertificateByCourseId = async function (req, res, next) {
     const user_id = req.id;
     const course_id = req.params.course_id;
     try {
-        let certificate = await certificateModel.findOne({ course_id, user_id });
+        let certificate = await certificateModel.findOne({ course_id, user_id }).populate([{path:"user_id",select:"username"},{path:"course_id",select:"name"}]);
 
         if (!certificate) {
             return next(new APIERROR(404, "certificate not found"));
