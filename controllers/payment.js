@@ -194,7 +194,8 @@ const getInstructorPayments = async (req, res) => {
   
     try {
       
-      const payments = await PaymentModel.find({ instructor_id: instructorId });
+      const payments = await PaymentModel.find({ instructor_id: instructorId }).populate('course_ids', 'name')  
+      .populate('instructor_id', 'username');  
   
       if (!payments || payments.length === 0) {
         return res.status(404).json({ message: "No payments found for this instructor" });
