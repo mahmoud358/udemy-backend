@@ -142,7 +142,7 @@ const triggerInstructorPayout = async (req, res) => {
         if (!payment) return res.status(404).json({ message: "Payment not found" });
         if (payment.instructorPaid) return res.status(400).json({ message: "Instructor has already been paid" });
 
-        // Use a static PayPal email for testing
+        
        // const instructorPaypalEmail = 'sb-zohjr33335588@business.example.com';  // Test email for PayPal sandbox
 
 
@@ -189,7 +189,46 @@ const triggerInstructorPayout = async (req, res) => {
     }
 };
 
+const getInstructorPayments = async (req, res) => {
+    const instructorId = req.params.instructorId;
+  
+    try {
+      
+      const payments = await PaymentModel.find({ instructor_id: instructorId });
+  
+      if (!payments || payments.length === 0) {
+        return res.status(404).json({ message: "No payments found for this instructor" });
+      }
+  
+      res.status(200).json({ status: 'success', data: payments });
+    } catch (error) {
+      res.status(500).json({ message: `Error fetching payments: ${error.message}` });
+    }
+  };
 
 
-module.exports = { completePayment, capturePayPalOrder, getAllUserPayments,triggerInstructorPayout };
+
+  const getPaymentsByUserId = async (req, res, next) => {
+    const userId = req.params.userId;  
+
+    try {
+        const payments = await PaymentModel.find({ userId })  
+            // .populate('course_ids', 'name')  
+            // .populate('instructor_id', 'username');  
+
+        if (!payments || payments.length === 0) {
+            return res.status(404).json({ message: "No payments found for this user" });
+        }
+
+        res.status(200).json({ status: 'success', data: payments });
+    } catch (error) {
+        return res.status(500).json({ message: `Error fetching payments: ${error.message}` });
+    }
+};
+
+  
+
+
+
+module.exports = { completePayment, capturePayPalOrder, getAllUserPayments,triggerInstructorPayout ,getInstructorPayments,getPaymentsByUserId };
 
