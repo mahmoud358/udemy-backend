@@ -9,4 +9,4 @@ let client = new paypal.core.PayPalHttpClient(environment);
 
 let payoutsClient = new paypalPayoutsSdk.core.PayPalHttpClient(environment);
 
-module.exports = { client ,payoutsClient,paypalPayoutsSdk };
+module.exports = { client , payoutsClient, paypalPayoutsSdk };
