@@ -8,16 +8,16 @@ const userRoles = require("../utils/user-roles");
 const {ReagisterAdmin,getAllAdmin,deletById,updateAdmin,AdminLogin,adminUpdataPassword}= require('../controllers/admin')
 
 
-router.post("/",ReagisterAdmin)
+router.post("/",allowedTo(userRoles.ADMIN),ReagisterAdmin)
 
 router.get("/",auth,allowedTo(userRoles.ADMIN),getAllAdmin)
 
-router.delete("/:id",auth,deletById)
+router.delete("/:id",auth,allowedTo(userRoles.ADMIN),deletById)
 
-router.patch("/:id",auth,updateAdmin)
+router.patch("/:id",auth,allowedTo(userRoles.ADMIN),updateAdmin)
 
 router.post("/login",AdminLogin)
 
-router.patch("/update/password",auth,adminUpdataPassword)
+router.patch("/update/password",auth,allowedTo(userRoles.ADMIN),adminUpdataPassword)
 
 module.exports=router
