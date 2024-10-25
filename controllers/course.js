@@ -46,6 +46,12 @@ let getCourseByID = async function(req, res, next) {
         },{
             path: 'reviews',
             select: 'rating reviewText userName createdAt'
+        },{
+            path: 'category_id',
+        },{
+            path: 'subcategory_id',
+        },{
+            path: 'topic_id',
         }]);
 
         if (!course) {
