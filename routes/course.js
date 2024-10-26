@@ -20,11 +20,11 @@ router.get('/subcategory/:subcategory_id', getCoursesBySubCategory);
 router.get('/:id',getCourseByID);
 
 
-router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER),addCourse);
+router.post('/',auth,allowedTo(userRoles.Instructor,userRoles.USER,userRoles.ADMIN),addCourse);
 
-router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER),updateCourse);
+router.patch('/:id',auth,allowedTo(userRoles.Instructor,userRoles.USER,userRoles.ADMIN),updateCourse);
 
-router.delete('/:id',auth,allowedTo(userRoles.Instructor,userRoles.ADMIN,userRoles.USER),deleteCourse);
+router.delete('/:id',auth,allowedTo(userRoles.Instructor,userRoles.ADMIN,userRoles.USER,userRoles.ADMIN),deleteCourse);
 
 
 

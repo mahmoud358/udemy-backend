@@ -12,14 +12,14 @@ router.get("/",userscontroller.getAllUsers );
 
 
 
- router.get("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor), userscontroller.getSingleUser);
+ router.get("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor,userRoles.ADMIN), userscontroller.getSingleUser);
 
 
  router.post("/register",userscontroller.createUser );
 
- router.patch("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor),userscontroller.updateUser)
+ router.patch("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor,userRoles.ADMIN),userscontroller.updateUser)
 
- router.delete("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor), userscontroller.deleteUser);
+ router.delete("/:userId",auth,allowedTo(userRoles.USER,userRoles.Instructor,userRoles.ADMIN), userscontroller.deleteUser);
 
 
  router.post("/login",userscontroller.login);

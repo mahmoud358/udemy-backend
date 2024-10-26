@@ -30,6 +30,7 @@ let subcategoreyRouter=require('./routes/subcategoreyroutes')
 let topicRouter=require('./routes/topicRoutes')
 let wishlistRouter=require('./routes/wishlist')
 let reviewRouter=require('./routes/review')
+let messageRouter=require('./routes/message')
 // let certificateRouter=require('./routes/certificateroutes')
 
 app.use("/user",userRouter)
@@ -43,7 +44,7 @@ app.use('/cart',cart)
 app.use('/coupon',coupon)
 app.use('/payment',payment)
 app.use('/review',reviewRouter)
-
+app.use('/message',messageRouter)
 
 app.use('/course', courseRouter);
 app.use('/module', moduleRouter);
