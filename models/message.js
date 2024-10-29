@@ -15,7 +15,7 @@ let messageSchema = mongoose.Schema({
         required: true
     },
    
-})
+}, {timestamps: true})
 
 const MessageModels = mongoose.model('messages', messageSchema)
 
