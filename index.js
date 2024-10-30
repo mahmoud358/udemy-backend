@@ -37,7 +37,14 @@ const pusher = new Pusher({
 app.set('pusher', pusher);
 app.use(express.json());
 app.use(cors({
-  origin:"*"
+  origin:[
+    "http://localhost:3000",
+    "http://localhost:4200",
+    "http://localhost:5173",
+    "https://udemy-next-nu.vercel.app"
+  ],
+  methods:["GET","POST","PUT","DELETE","PATCH"],
+  credentials:true
 }))
   
 
