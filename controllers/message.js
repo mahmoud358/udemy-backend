@@ -92,7 +92,8 @@ const getChats = async (req, res, next) => {
         
         // Extract just the last messages and populate user details
         const populatedChats = await MessageModel.populate(chats.map(chat => chat.lastMessage), [
-            { path: "receiverId" }
+            { path: "receiverId" },
+            {path:"senderId"}
         ]);
         
         res.status(200).json({
