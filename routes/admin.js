@@ -8,7 +8,7 @@ const userRoles = require("../utils/user-roles");
 const {ReagisterAdmin,getAllAdmin,deletById,updateAdmin,AdminLogin,adminUpdataPassword}= require('../controllers/admin')
 
 
-router.post("/",allowedTo(userRoles.ADMIN),ReagisterAdmin)
+router.post("/",auth,allowedTo(userRoles.ADMIN),ReagisterAdmin)
 
 router.get("/",auth,allowedTo(userRoles.ADMIN),getAllAdmin)
 
