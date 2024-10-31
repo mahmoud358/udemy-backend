@@ -37,16 +37,20 @@ const pusher = new Pusher({
 app.set('pusher', pusher);
 app.use(express.json());
 app.use(cors({
-  origin:[
-    "http://localhost:3000",
-    "http://localhost:4200",
-    "http://localhost:5173",
-    "https://udemy-next-nu.vercel.app",
-    "https://udemy-backend-o9ln.vercel.app"
-  ],
-  methods:["GET","POST","PUT","DELETE","PATCH"],
-  credentials:true
-}))
+  origin: '*',
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true
+}));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://udemy-next-nu.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 
 
 
