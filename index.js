@@ -41,7 +41,8 @@ app.use(cors({
     "http://localhost:3000",
     "http://localhost:4200",
     "http://localhost:5173",
-    "https://udemy-next-nu.vercel.app"
+    "https://udemy-next-nu.vercel.app",
+    "https://udemy-backend-o9ln.vercel.app"
   ],
   methods:["GET","POST","PUT","DELETE","PATCH"],
   credentials:true
