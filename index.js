@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors =require('cors')
-const dotenv=require("dotenv")
+const cors = require('cors')
+const dotenv = require("dotenv")
 const http = require('http');
 const Pusher = require("pusher");
 const { auth } = require("./middleware/auth");
@@ -19,6 +19,64 @@ mongoose.connect(process.env.MONGODB_URL).then(() => console.log('Connected!')).
 
 
 const app = express();
+
+app.use(express.json());
+
+
+// app.use(cors())
+
+// app.use(cors({
+//   origin: 'http://localhost:4200',
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   credentials: true
+// }));
+
+// app.options('*', cors({
+//   origin: 'http://localhost:4200',
+//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//   credentials: true
+// }));
+
+
+
+
+
+
+app.use(cors({
+  origin: ['http://localhost:4200',
+    'http://localhost:3000',
+    'https://udemy-next-nu.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+//app.options('*', cors()); // Enable pre-flight for all routes
+
+// app.get('/payment/all', (req, res) => {
+//   res.json({ message: 'CORS test successful' });
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const server = http.createServer(app);
 // const io = new Server(server,{
 //   cors:{
@@ -35,11 +93,7 @@ const pusher = new Pusher({
 });
 
 app.set('pusher', pusher);
-app.use(express.json());
-app.use(cors({
-  origin:"*"
-}))
-  
+
 
 
 const userRouter = require("./routes/user.routes")
@@ -49,30 +103,30 @@ const lessonRouter = require('./routes/lesson');
 const quizRouter = require('./routes/quiz');
 const questionRouter = require('./routes/question');
 const certificateRouter = require('./routes/certificate');
-const admin=require('./routes/admin')
+const admin = require('./routes/admin')
 const payment = require('./routes/payment')
-let cart=require('./routes/cart')
-let coupon=require('./routes/coupon')
-let categoreyRouter=require('./routes/categoreyRoute')
-let subcategoreyRouter=require('./routes/subcategoreyroutes')
-let topicRouter=require('./routes/topicRoutes')
-let wishlistRouter=require('./routes/wishlist')
-let reviewRouter=require('./routes/review')
-let messageRouter=require('./routes/message');
+let cart = require('./routes/cart')
+let coupon = require('./routes/coupon')
+let categoreyRouter = require('./routes/categoreyRoute')
+let subcategoreyRouter = require('./routes/subcategoreyroutes')
+let topicRouter = require('./routes/topicRoutes')
+let wishlistRouter = require('./routes/wishlist')
+let reviewRouter = require('./routes/review')
+let messageRouter = require('./routes/message');
 // let certificateRouter=require('./routes/certificateroutes')
 
-app.use("/user",userRouter)
-app.use('/categorey',categoreyRouter)
-app.use('/subcategorey',subcategoreyRouter)
-app.use('/topic',topicRouter)
+app.use("/user", userRouter)
+app.use('/categorey', categoreyRouter)
+app.use('/subcategorey', subcategoreyRouter)
+app.use('/topic', topicRouter)
 // app.use('/certificate',certificateRouter)
-app.use('/wishlist',wishlistRouter)
-app.use('/admin',admin)
-app.use('/cart',cart)
-app.use('/coupon',coupon)
-app.use('/payment',payment)
-app.use('/review',reviewRouter)
-app.use('/message',messageRouter)
+app.use('/wishlist', wishlistRouter)
+app.use('/admin', admin)
+app.use('/cart', cart)
+app.use('/coupon', coupon)
+app.use('/payment', payment)
+app.use('/review', reviewRouter)
+app.use('/message', messageRouter)
 
 app.use('/course', courseRouter);
 app.use('/module', moduleRouter);
@@ -82,13 +136,13 @@ app.use('/question', questionRouter);
 
 app.use('/certificate', certificateRouter);
 
-app.all("*",(req,res,next)=>{
-  res.status(404).json({"status":"Failed","message":"Page not found"});
+app.all("*", (req, res, next) => {
+  res.status(404).json({ "status": "Failed", "message": "Page not found" });
 })
 app.use(function (error, req, res, next) {
   console.log("error called");
   let statusCode = error.statusCode ? error.statusCode : 500;
-  res.status(statusCode).json({status: "fail",message: error.message});
+  res.status(statusCode).json({ status: "fail", message: error.message });
 })
 
 
