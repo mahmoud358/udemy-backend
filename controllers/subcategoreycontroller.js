@@ -79,10 +79,10 @@ patchSubcategoreyById = async (req, res, next) => {
     let newSubcategorey = req.body
     let { id } = req.params
     try {
-        let getSubcategorey = await categoreylistModel.findByIdAndUpdate(id, { $set: newSubcategorey })
+        let getSubcategorey = await subcategoreylistModel.findByIdAndUpdate(id, { $set: newSubcategorey })
 
         if (getSubcategorey) {
-            res.status(200).json({ status: "success", massage: `Subcategorey with ID ${id} has been updated` })
+            res.status(200).json({ status: "success", massage: `Subcategorey with ID ${id} has been updated`, data: getSubcategorey })
         }
 
         else {

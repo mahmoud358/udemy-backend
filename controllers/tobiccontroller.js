@@ -89,9 +89,14 @@ getTopicById = async (req, res, next) => {
 
 getTopicByName = async (req, res, next) => {
     const { name } = req.params;
-
+    const { lang } = req.query;
+    let topic;
     try {
-        const topic = await topicListModel.findOne({ name });
+        if (lang === "ar") {
+            topic = await topicListModel.findOne({ "name.ar": name });
+        } else {
+            topic = await topicListModel.findOne({ "name.en": name });
+        }
 
         if (!topic) {
             return next(new APIERROR(404, "Topic not found"));
@@ -134,7 +139,7 @@ patchTopoicById = async (req, res, next) => {
         console.log(topicID,);
 
         if (updatedTopic) {
-            res.status(200).json({ status: "success", massage: `Document with ID ${topicID} has been updated` })
+            res.status(200).json({ status: "success", massage: `Document with ID ${topicID} has been updated`, data: updatedTopic })
         }
 
         else {
