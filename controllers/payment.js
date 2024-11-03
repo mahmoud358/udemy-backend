@@ -227,9 +227,32 @@ const getInstructorPayments = async (req, res) => {
     }
 };
 
+
+const getAllPayments = async (req, res) => {
+    try {
+        const payments = await PaymentModel.find()
+            .populate('userId', 'username')  
+            .populate({
+                path: 'course_ids',
+                populate: {
+                    path: 'instructor_id',
+                    select: 'username'
+                }
+            });
+        
+        if (!payments.length) {
+            return res.status(404).json({ message: "No payments found" });
+        }
+
+        res.status(200).json({ status: 'success', data: payments });
+    } catch (error) {
+        res.status(500).json({ message: `Error fetching payments: ${error.message}` });
+    }
+};
+
   
 
 
 
-module.exports = { completePayment, capturePayPalOrder, getAllUserPayments,triggerInstructorPayout ,getInstructorPayments,getPaymentsByUserId };
+module.exports = { completePayment, capturePayPalOrder, getAllUserPayments,triggerInstructorPayout ,getInstructorPayments,getPaymentsByUserId,getAllPayments };
 

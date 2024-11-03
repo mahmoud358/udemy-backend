@@ -102,7 +102,6 @@ const updateUser = async (req, res, next) => {
         next(new APIERROR(400, err.message))
     }
 
-
 }
 
 const deleteUser = async (req, res, next) => {
