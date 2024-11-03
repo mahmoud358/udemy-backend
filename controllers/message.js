@@ -1,6 +1,8 @@
 const APIERROR = require("../utils/apiError")
 const MessageModel = require('../models/message')
 // const io = require('../utils/socket').getIo();
+const NotificationModel= require('../models/notification')
+
 
 const createMessage = async (req, res, next) => {
     const senderId = req.id;
@@ -11,14 +13,22 @@ const createMessage = async (req, res, next) => {
             receiverId,
             message
         })
-        // const io = req.app.get('io');
+        const notification= await NotificationModel.create({
+            userId: receiverId,
+            content: newMessage.message,
+            type: "message",
+            sender: senderId
+        })
+        // const io = req.app.get('io');s
         const pusher = req.app.get('pusher');
        await pusher.trigger(`chat-${receiverId}`, 'newMessage', newMessage);
+       await pusher.trigger(`notification-${receiverId}`, 'newNotification', notification);
         res.status(200).json({
             status: "success",
             message: "Message created successfully",
             data: newMessage
         })
+       
     }catch(err){
         next(new APIERROR(400, err.message))
     }

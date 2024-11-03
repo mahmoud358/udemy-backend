@@ -113,13 +113,12 @@ let topicRouter = require('./routes/topicRoutes')
 let wishlistRouter = require('./routes/wishlist')
 let reviewRouter = require('./routes/review')
 let messageRouter = require('./routes/message');
-// let certificateRouter=require('./routes/certificateroutes')
+let notificationRouter = require('./routes/notification')
 
 app.use("/user", userRouter)
 app.use('/categorey', categoreyRouter)
 app.use('/subcategorey', subcategoreyRouter)
 app.use('/topic', topicRouter)
-// app.use('/certificate',certificateRouter)
 app.use('/wishlist', wishlistRouter)
 app.use('/admin', admin)
 app.use('/cart', cart)
@@ -127,7 +126,7 @@ app.use('/coupon', coupon)
 app.use('/payment', payment)
 app.use('/review', reviewRouter)
 app.use('/message', messageRouter)
-
+app.use('/notification', notificationRouter)
 app.use('/course', courseRouter);
 app.use('/module', moduleRouter);
 app.use('/lesson', lessonRouter);
