@@ -78,7 +78,7 @@ patchCategoreyById = async (req, res, next) => {
         let getCategory = await categoreylistModel.findByIdAndUpdate(id, { $set: newCategory })
 
         if (getCategory) {
-            res.status(200).json({ status: "success", massage: `Document with ID ${id} has been updated` })
+            res.status(200).json({ status: "success", massage: `Document with ID ${id} has been updated`, data: getCategory })
         }
 
         else {

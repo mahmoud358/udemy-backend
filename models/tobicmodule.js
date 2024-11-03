@@ -2,11 +2,20 @@ const mongoose = require("mongoose")
 
 let topicSchema = mongoose.Schema({
     name: {
-        type: String,
+        en:{
+            type: String,
         required: [true, "Please,Enter topic name first"],
         unique: [true, 'this name is already exist , topic name must be unique'],
-        minLength: 2,
-        maxLength: [30, " maximum length is 16 letter"]
+            minLength: 2,
+            maxLength: [30, " maximum length is 30 letter"]
+        },
+        ar: {
+            type: String,
+            required: [true, "ادخل اسم الموضوع"],
+            unique: [true, 'هذا الاسم موجود بالفعل، يجب أن يكون اسم الموضوع مميز'],
+            minLength: 2,
+            maxLength: [30, " الحد الأقصى للأحرف هو 30 حرف"]
+        }
     },
     description: {
         type: String,
