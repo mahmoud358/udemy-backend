@@ -52,7 +52,11 @@ const completePayment = async (req, res) => {
                 paymentMethod
             });
 
-            await payment.save();
+
+            const savedPayment = await payment.save();
+            // console.log(savedPayment.populate('course_ids'));
+       await pusher.trigger(`notification-${savedPayment.instructor_id}`, 'newNotification', savedPayment);
+
             await CartModel.deleteOne({ _id: cart._id });
             res.status(200).json({ message: "Payment completed successfully", payment });
         }
