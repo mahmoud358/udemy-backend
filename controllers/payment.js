@@ -106,7 +106,7 @@ console.log("payment",payment);
                     senderId: payment.instructor_id,
                     receiverId: req.id,
                     message: `welcome in ${payment.course_ids[0].name.en} course`
-                })
+                }).populate('senderId')
                 const notificationOfInstructor= await NotificationModel.create({
                     userId: payment.instructor_id,
                     content: `New payment received for ${payment.course_ids[0].name.en} course`,
