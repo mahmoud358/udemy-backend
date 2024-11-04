@@ -3,6 +3,9 @@ const CartModel = require('../models/cart');
 const { client } = require('../utils/paypalConfig');
 const paypal = require('@paypal/checkout-server-sdk');
 const { payoutsClient ,paypalPayoutsSdk } = require('../utils/paypalConfig');
+const NotificationModel= require('../models/notification')
+const MessageModel = require('../models/message')
+
 
 const completePayment = async (req, res) => {
     const userId = req.id;
@@ -52,10 +55,10 @@ const completePayment = async (req, res) => {
                 paymentMethod
             });
 
+            
 
             const savedPayment = await payment.save();
-            // console.log(savedPayment.populate('course_ids'));
-       await pusher.trigger(`notification-${savedPayment.instructor_id}`, 'newNotification', savedPayment);
+            
 
             await CartModel.deleteOne({ _id: cart._id });
             res.status(200).json({ message: "Payment completed successfully", payment });
@@ -96,9 +99,31 @@ const capturePayPalOrder = async (req, res) => {
                     paymentStatus: 'successful',
                     orderId
                 });
-
+console.log("payment",payment);
                 await payment.save();
                 await CartModel.deleteOne({ _id: cart._id });
+                const newMessage= await MessageModel.create({
+                    senderId: payment.instructor_id,
+                    receiverId: req.id,
+                    message: `welcome in ${payment.course_ids[0].name.en} course`
+                })
+                const notificationOfInstructor= await NotificationModel.create({
+                    userId: payment.instructor_id,
+                    content: `New payment received for ${payment.course_ids[0].name.en} course`,
+                    type: "payment",
+                    // sender: req.id
+                })
+                const notificationOfUser= await NotificationModel.create({
+                    userId: req.id,
+                    content: newMessage.message,
+                    type: "message",
+                    sender: payment.instructor_id
+                })
+                const pusher = req.app.get('pusher');
+                await pusher.trigger(`chat-${req.id}`, 'newMessage', newMessage);
+
+                await pusher.trigger(`notification-${payment.instructor_id}`, 'newNotification', notificationOfInstructor);
+                await pusher.trigger(`notification-${req.id}`, 'newNotification', notificationOfUser);
 
                 return res.status(200).json({ message: "Payment completed successfully", payment });
             } else {
