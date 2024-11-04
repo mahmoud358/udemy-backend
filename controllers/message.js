@@ -15,13 +15,13 @@ const createMessage = async (req, res, next) => {
             receiverId,
             message
         })
-        const sender= await User.findById(senderId)
+        // const sender= await User.findById(senderId)
         const notification= await NotificationModel.create({
             userId: receiverId,
             content: newMessage.message,
             type: "message",
-            sender: {_id:sender._id,username:sender.username}
-        })
+            sender: senderId
+        }).populate('sender')
         // const io = req.app.get('io');s
         const pusher = req.app.get('pusher');
        await pusher.trigger(`chat-${receiverId}`, 'newMessage', newMessage);
