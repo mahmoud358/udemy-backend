@@ -21,11 +21,12 @@ const createMessage = async (req, res, next) => {
             content: newMessage.message,
             type: "message",
             sender: senderId
-        }).populate('sender')
+        })
+        const populatedNotification= await NotificationModel.populate(notification,{path:"sender"})
         // const io = req.app.get('io');s
         const pusher = req.app.get('pusher');
        await pusher.trigger(`chat-${receiverId}`, 'newMessage', newMessage);
-       await pusher.trigger(`notification-${receiverId}`, 'newNotification', notification);
+       await pusher.trigger(`notification-${receiverId}`, 'newNotification', populatedNotification);
         res.status(200).json({
             status: "success",
             message: "Message created successfully",

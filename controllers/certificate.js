@@ -89,11 +89,12 @@ let createAndUpdateCertificate = async function (req, res, next) {
                         content: newMessage.message,
                         type: "message",
                         sender: certificate.course_id.instructor_id
-                    }).populate('sender')
+                    })
+                    const populatedNotification= await NotificationModel.populate(notification,{path:"sender"})
                     const pusher = req.app.get('pusher');
                     await pusher.trigger(`chat-${user_id}`, 'newMessage', newMessage);
 
-                    await pusher.trigger(`notification-${user_id}`, 'newNotification', notification);
+                    await pusher.trigger(`notification-${user_id}`, 'newNotification', populatedNotification);
                 }
 
             } 
