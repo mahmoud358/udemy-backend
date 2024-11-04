@@ -53,7 +53,7 @@ let createAndUpdateCertificate = async function (req, res, next) {
     const quizIDs = quizID ? [quizID] : [];
 
     try {
-        let certificate = await certificateModel.findOne({ course_id, user_id }).populate('course_id');
+        let certificate = await certificateModel.findOne({ course_id, user_id }).populate('course_id').populate('course_id.instructor_id');
         
        
         if (certificate) {
@@ -80,7 +80,7 @@ let createAndUpdateCertificate = async function (req, res, next) {
                 if (lessonIds.toString() === certificate.lessonIDs.toString() && quizIds.toString() === certificate.quizIDs.toString()) {
                     certificate.isCompleted = true;
                     const newMessage = await MessageModel.create({
-                        senderId:certificate.course_id.instructor_id,
+                        senderId:certificate.course_id.instructor_id._id,
                         receiverId:user_id,
                         message: `congratulations you have completed the ${certificate.course_id.name.en} course`
                     })
@@ -88,7 +88,7 @@ let createAndUpdateCertificate = async function (req, res, next) {
                         userId:user_id,
                         content: newMessage.message,
                         type: "message",
-                        sender: certificate.course_id.instructor_id
+                        sender: {_id:certificate.course_id.instructor_id._id,username:certificate.course_id.instructor_id.username}
                     })
                     const pusher = req.app.get('pusher');
                     await pusher.trigger(`chat-${user_id}`, 'newMessage', newMessage);
