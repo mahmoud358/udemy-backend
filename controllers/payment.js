@@ -119,11 +119,12 @@ const capturePayPalOrder = async (req, res) => {
                     type: "message",
                     sender: payment.instructor_id
                 })
+                
+                const populatedNotificationOfUser= await NotificationModel.populate(notificationOfUser,{path:"sender"})
                 const pusher = req.app.get('pusher');
                 await pusher.trigger(`chat-${req.id}`, 'newMessage', newMessage);
-
                 await pusher.trigger(`notification-${payment.instructor_id}`, 'newNotification', notificationOfInstructor);
-                await pusher.trigger(`notification-${req.id}`, 'newNotification', notificationOfUser);
+                await pusher.trigger(`notification-${req.id}`, 'newNotification', populatedNotificationOfUser);
 
                 return res.status(200).json({ message: "Payment completed successfully", payment });
             } else {
