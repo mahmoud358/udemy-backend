@@ -98,17 +98,17 @@ const capturePayPalOrder = async (req, res) => {
                     paymentMethod: 'paypal',
                     paymentStatus: 'successful',
                     orderId
-                }).populate('instructor_id');
-console.log("payment",payment);
+                })
+// console.log("payment",payment);
                 await payment.save();
                 await CartModel.deleteOne({ _id: cart._id });
                 const newMessage= await MessageModel.create({
-                    senderId: payment.instructor_id._id,
+                    senderId: payment.instructor_id,
                     receiverId: req.id,
                     message: `welcome in ${payment.course_ids[0].name.en} course`
                 })
                 const notificationOfInstructor= await NotificationModel.create({
-                    userId: payment.instructor_id._id,
+                    userId: payment.instructor_id,
                     content: `New payment received for ${payment.course_ids[0].name.en} course`,
                     type: "payment",
                     // sender: req.id
@@ -117,7 +117,7 @@ console.log("payment",payment);
                     userId: req.id,
                     content: newMessage.message,
                     type: "message",
-                    sender: {_id:payment.instructor_id._id,username:payment.instructor_id.username}
+                    sender: payment.instructor_id
                 })
                 const pusher = req.app.get('pusher');
                 await pusher.trigger(`chat-${req.id}`, 'newMessage', newMessage);
