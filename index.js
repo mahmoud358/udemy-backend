@@ -45,7 +45,8 @@ app.use(express.json());
 app.use(cors({
   origin: ['http://localhost:4200',
     'http://localhost:3000',
-    'https://udemy-next-nu.vercel.app'
+    'https://udemy-next-nu.vercel.app',
+    'https://udemy-dashboard.vercel.app/'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -57,14 +58,6 @@ app.use(cors({
 // app.get('/payment/all', (req, res) => {
 //   res.json({ message: 'CORS test successful' });
 // });
-
-
-
-
-
-
-
-
 
 
 
@@ -93,6 +86,7 @@ const pusher = new Pusher({
 });
 
 app.set('pusher', pusher);
+
 
 
 
