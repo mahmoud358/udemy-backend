@@ -21,7 +21,7 @@ const getAllNotification=async(req,res,next)=>{
 const getNotificationByUesrId=async(req,res,next)=>{
     let userId=req.id
     try{
-        let result=await NotificationModel.find({userId})
+        let result=await NotificationModel.find({userId}).populate('sender')
         if(!result){
             next(new APIERROR(404,"no notification found"))
         }
