@@ -35,8 +35,17 @@ const updateNotification=async(req,res,next)=>{
     let id=req.params.id
     let notification=req.body
     try{
-        let result=await NotificationModel.findByIdAndUpdate(id,notification,{new:true})
-        res.status(200).json({status:"success",data:result})
+        const existingNotification=await NotificationModel.findById(id)
+        if(!existingNotification){
+           return next(new APIERROR(404,"notification not found"))
+        }
+        if(notification.type==="Message" ){
+            await NotificationModel.updateMany({sender:existingNotification.sender},{$set:{isRead:true}})
+        }else{
+            await NotificationModel.findByIdAndUpdate(id,notification,{new:true})
+        }
+
+        res.status(200).json({status:"success",message:"notification updated successfully"})
     }catch(err){
         next(new APIERROR(404,err.message));
     }
