@@ -21,7 +21,7 @@ let CreateCoupon = async (req, res, next) => {
             return next(new APIERROR(400, `Please, make sure that the coupon is not expired `))
           
         }
-        const couponCreator = req.params.id
+        const couponCreator = req.id
 
         coupon.createdBy = couponCreator
 
@@ -48,7 +48,7 @@ let getCouponByCode = async (req, res, next) => {
     const userId = req.id;
     let courseID = req.body
     try {
-        let result = await CouponModels.findById(code).populate('courses')
+        let result = await CouponModels.findOne(code).populate('courses')
 
         if (!result) {
             return res.status(404).json({ message: " 'Coupon not found'" })
@@ -75,7 +75,7 @@ let getCouponByCode = async (req, res, next) => {
 
         }
 
-        if (user.coupons.includes(result._id)) {
+        // if (user.coupons.includes(result._id)) {
             const isCouponIncluded = user.coupons.filter((couponItem) => {
                 couponItem._id == result._id
             })
@@ -91,7 +91,7 @@ let getCouponByCode = async (req, res, next) => {
 
             res.status(200).json({ status: "success", data:courseToUpdate ,message:`${result.code} is valid and the price after coupon will be ${coursePriceAfterCoupon} as coupon discound is ${result.discountValue}`});
 
-        }
+        // }
 
     } catch (err) {
         res.status(500).json(err)
@@ -118,6 +118,7 @@ const addCouponToCourse = async(req, res, next)=>{
    const notfoundCourses=[]
    try{
     const isFoundCoupon= await CouponModels.findById(couponID)
+
     if(!isFoundCoupon){
         return next(new APIERROR(404, `coupon with ${couponID} is not found`)); 
     }
@@ -140,16 +141,21 @@ const addCouponToCourse = async(req, res, next)=>{
             notfoundCourses.push(element);
             continue; 
         }
-
+        
         const courseToUpdate=  await CourseModel.findByIdAndUpdate(element, 
         {
             $set: {
-              couponToApply: isFoundCoupon,
-              priceAfterCoupon: course.price * (1 - (isFoundCoupon.discountValue / 100))
+              activeCouponToApply : isFoundCoupon._id,
+              priceAfterCoupon : course.price * (1 - (isFoundCoupon.discountValue / 100))
             },
-            $push: { coupons: isFoundCoupon } 
-
         })
+
+        await CouponModels.findByIdAndUpdate(couponID, 
+            {
+               
+                $push: { courses: element } 
+    
+            })
 
 
         if (notfoundCourses.length > 0) {
@@ -210,4 +216,4 @@ let deleteCouponFromCourse=async (req, res) => {
 
 
 
-module.exports = { CreateCoupon,addCouponToCourse, getAllCoupon, getCouponByCode,getCouponByID, updateCoupon, deleteCoupon , deleteCouponFromCourse}
+module.exports = { CreateCoupon,addCouponToCourse, getAllCoupon, getCouponByCode,getCouponByID, updateCoupon, deleteCoupon}
