@@ -86,15 +86,10 @@ const pusher = new Pusher({
 });
 
 app.set('pusher', pusher);
-<<<<<<<<< Temporary merge branch 1
-app.use(express.json());
-app.use(cors({
-  origin: '*'
-}));
 
 
-=========
->>>>>>>>> Temporary merge branch 2
+
+
 
 
 
