@@ -6,7 +6,7 @@ const APIERROR = require("../utils/apiError")
 const todayDate = new Date()
 
 let CreateCoupon = async (req, res, next) => {
-    
+
     try {
         let coupon = req.body
         const oldCoupon = await CouponModels.findOne({ code: coupon.code })
@@ -190,6 +190,8 @@ let deleteCoupon = async (req, res) => {
         res.json({ message: "Coupon deleted successfully" })
     } catch (err) {
         res.status(500).json(err)
+
+        
     }
 }
 
