@@ -8,14 +8,14 @@ const userRoles = require("../utils/user-roles");
 
 
 router.post('/',auth,allowedTo(userRoles.USER),CreateCoupon)
-router.post('/addcouponTocourse',auth,allowedTo(userRoles.USER),addCouponToCourse)
+router.post('/addcouponTocourse/:couponID',auth,allowedTo(userRoles.USER),addCouponToCourse)
 
 router.get('/',auth,allowedTo(userRoles.ADMIN,userRoles.USER,userRoles.Instructor),getAllCoupon)   
 
-router.get('/code/:code',auth,allowedTo(userRoles.ADMIN,userRoles.USER,userRoles.Instructor),getCouponByCode)
+router.post('/code/user/:code',auth,allowedTo(userRoles.ADMIN,userRoles.USER,userRoles.Instructor),getCouponByCode)
 router.get('/:id',auth,allowedTo(userRoles.ADMIN,userRoles.USER,userRoles.Instructor),getCouponByID) 
 
-router.patch('/:id',auth,allowedTo(userRoles.ADMIN),updateCoupon)
+router.patch('/:id',auth,allowedTo(userRoles.USER),updateCoupon)
 
 router.delete('/:id',auth,allowedTo(userRoles.ADMIN),deleteCoupon)
 

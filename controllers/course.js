@@ -52,6 +52,8 @@ let getCourseByID = async function(req, res, next) {
             path: 'subcategory_id',
         },{
             path: 'topic_id',
+        },{
+            path: 'activeCouponToApply',
         }]);
 
         if (!course) {
@@ -293,20 +295,42 @@ let filterCourses = async function (req, res, next) {
     }
 };
 
-let updateCouponInCourse=async (req, res,next) => {
-    activeCouponToApply=req.body
-    try{
-        let course=await courseModel.findByIdAndUpdate(req.params.id,{$set:{activeCouponToApply}});
+// let updateCouponInCourse=async (req, res,next) => {
+//     activeCouponToApply=req.body
+//     try{
+//         let course=await courseModel.findByIdAndUpdate(req.params.id,{$set:{activeCouponToApply}});
         
-        if(!course){
-            return next(new APIERROR(404,"course not found"));
-        }
-        res.status(200).json({status: "success",data:course})
-    }catch(err){
-        next(new APIERROR(404, err.message));
+//         if(!course){
+//             return next(new APIERROR(404,"course not found"));
+//         }
+//         res.status(200).json({status: "success",data:course})
+//     }catch(err){
+//         next(new APIERROR(404, err.message));
 
+//     }
+// }
+
+
+let updateCouponInCourse = async (req, res, next) => {
+    const { activeCouponToApply } = req.body;
+    try {
+        let course = await courseModel.findByIdAndUpdate(
+            req.params.id,
+            { activeCouponToApply },
+            { new: true }
+        );
+        
+        if (!course) {
+            return next(new APIERROR(404, "course not found"));
+        }
+        res.status(200).json({
+            status: "success",
+            data: course
+        });
+    } catch (err) {
+        next(new APIERROR(404, err.message));
     }
-}
+};
 
 
 module.exports={getCourses,getCourseByID,addCourse,updateCourse,deleteCourse ,getCoursesByInstructor,getCoursesByTopic,getCoursesByCategory,getCoursesBySubCategory,

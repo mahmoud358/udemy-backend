@@ -96,7 +96,7 @@ let courseSchema = mongoose.Schema({
            
         }
     },
-    activeCouponToApply:{ type: String },
+    activeCouponToApply:{ type: mongoose.Schema.ObjectId, ref: "coupons" },
     
 }, { timestamps: true })
 
