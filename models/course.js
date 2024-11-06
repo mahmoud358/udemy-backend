@@ -80,7 +80,7 @@ let courseSchema = mongoose.Schema({
     rating: { type: Number, default: 0 },
 
     // -----------------------------------------------
-    coupons: [{ type: mongoose.Schema.ObjectId, ref: "coupons" }],
+    // coupons: [{ type: mongoose.Schema.ObjectId, ref: "coupons" }],
     priceAfterCoupon: {
         type: Number,
         default: function() {
@@ -96,7 +96,7 @@ let courseSchema = mongoose.Schema({
            
         }
     },
-    couponToApply:{ type: String },
+    activeCouponToApply:{ type: String },
     
 }, { timestamps: true })
 

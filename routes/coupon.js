@@ -18,6 +18,6 @@ router.get('/:id',auth,allowedTo(userRoles.ADMIN,userRoles.USER,userRoles.Instru
 router.patch('/:id',auth,allowedTo(userRoles.ADMIN),updateCoupon)
 
 router.delete('/:id',auth,allowedTo(userRoles.ADMIN),deleteCoupon)
-router.delete('/fromCourse/:id',auth,allowedTo(userRoles.ADMIN),deleteCoupon)
+
 
 module.exports=router
