@@ -24,13 +24,14 @@ const getAllUsers = async (req, res, next) => {
 const getSingleUser = async (req, res, next) => {
     const { userId } = req.params
 
-    if(userId==req.id){
+    try{
         const user = await User.findById(userId)
     if (!user) return next(new APIERROR(404, "user not found"));
     res.status(200).json({ status: "success", data: user })
-    }else{
-        return next(new APIERROR(401, "You are not authorized "));
+    }catch(err){
+        next(new APIERROR(400, err.message))
     }
+    
 
     
 
