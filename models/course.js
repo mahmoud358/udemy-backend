@@ -77,9 +77,27 @@ let courseSchema = mongoose.Schema({
         ar: [{ type: String }]
     },
     reviews: [{ type: mongoose.Schema.ObjectId, ref: "reviews" }],
-    rating: { type: Number, default: 0 }
+    rating: { type: Number, default: 0 },
 
+    // -----------------------------------------------
+    coupons: [{ type: mongoose.Schema.ObjectId, ref: "coupons" }],
+    priceAfterCoupon: {
+        type: Number,
+        default: function() {
+           return this.price; 
 
+        }
+    },
+
+    priceAfterUserCoupon: {
+        type: Number,
+        default: function() {
+           return this.price; 
+           
+        }
+    },
+    couponToApply:{ type: String },
+    
 }, { timestamps: true })
 
 let courseModel = mongoose.model("course", courseSchema);

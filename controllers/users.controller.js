@@ -31,9 +31,7 @@ const getSingleUser = async (req, res, next) => {
     }catch(err){
         next(new APIERROR(400, err.message))
     }
-    
 
-    
 
 }
 

@@ -103,7 +103,9 @@ const userSchema = new mongoose.Schema({
     }
   }],
   passwordResetToken: String,
-  passwordResetExpires: Date
+  passwordResetExpires: Date,
+  coupons: [{ type: mongoose.Schema.ObjectId, ref: "coupons" }],
+
 });
 
 userSchema.methods.createResetPasswordToken = function () {
