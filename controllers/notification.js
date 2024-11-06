@@ -39,7 +39,7 @@ const updateNotification=async(req,res,next)=>{
         if(!existingNotification){
            return next(new APIERROR(404,"notification not found"))
         }
-        if(notification.type==="message" ){
+        if(existingNotification.type=="message" ){
             await NotificationModel.updateMany({sender:existingNotification.sender},{$set:{isRead:true}})
         }else{
             await NotificationModel.findByIdAndUpdate(id,notification,{new:true})
