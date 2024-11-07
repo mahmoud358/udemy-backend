@@ -12,7 +12,11 @@ const completePayment = async (req, res) => {
     const { paymentMethod } = req.body;
 
     try {
-        const cart = await CartModel.findOne({ userId, status: 'inProgress' }).populate('course_ids');
+        const cart = await CartModel.findOne({ userId, status: 'inProgress' }).populate({
+            path: 'courses.course_id',
+            select: 'name instructor_id'
+        });
+        
         if (!cart) return res.status(404).json({ message: "No active cart found" });
 
         const totalAmount = cart.totalPrice;
@@ -34,7 +38,7 @@ const completePayment = async (req, res) => {
                     return_url: `${process.env.FRONTEND_URL}/payment/success`,
                     cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
                     user_action: "PAY_NOW",
-                    brand_name:"Udemy"
+                    brand_name: "Udemy"
                 }
             });
 
@@ -47,22 +51,18 @@ const completePayment = async (req, res) => {
         } else {
             const payment = new PaymentModel({
                 userId,
-                instructor_id: cart.courses[0].course_id.instructor_id,    
-                 
-                course_ids: cart.courses.map(course=>course.course_id),
+                instructor_id: cart.courses[0].course_id.instructor_id,
+                course_ids: cart.courses.map(course => course.course_id._id),
                 totalAmount: cart.totalPrice,
                 platformShare,
                 instructorShare,
                 paymentMethod
             });
 
-            
-
             const savedPayment = await payment.save();
-            
-
             await CartModel.deleteOne({ _id: cart._id });
-            res.status(200).json({ message: "Payment completed successfully", payment });
+            
+            res.status(200).json({ message: "Payment completed successfully", payment: savedPayment });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -91,7 +91,7 @@ const capturePayPalOrder = async (req, res) => {
 
                 const payment = new PaymentModel({
                     userId: req.id,
-                    course_ids: cart.courses.map(course=>course.course_id),
+                    course_ids: cart.courses.map(course=>course.course_id._id),
                     instructor_id: cart.courses[0].course_id.instructor_id,
                     totalAmount: cart.totalPrice,
                     platformShare,
@@ -225,8 +225,12 @@ const getInstructorPayments = async (req, res) => {
   
     try {
       
-      const payments = await PaymentModel.find({ instructor_id: instructorId }).populate('course_ids', 'name')  
-      .populate('instructor_id', 'username');  
+      const payments = await PaymentModel.find({ instructor_id: instructorId })
+        .populate({
+            path: 'course_ids',
+            select: 'name price'
+        })
+        .populate('instructor_id', 'username');
   
       if (!payments || payments.length === 0) {
         return res.status(404).json({ message: "No payments found for this instructor" });
@@ -286,4 +290,3 @@ const getAllPayments = async (req, res) => {
 
 
 module.exports = { completePayment, capturePayPalOrder, getAllUserPayments,triggerInstructorPayout ,getInstructorPayments,getPaymentsByUserId,getAllPayments };
-
