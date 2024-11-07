@@ -47,8 +47,8 @@ const completePayment = async (req, res) => {
         } else {
             const payment = new PaymentModel({
                 userId,
-                instructor_id: cart.course_ids[0].instructor_id, 
-                course_ids: cart.course_ids,
+                instructor_id: cart.courses[0].course_id.instructor_id, 
+                course_ids: cart.courses,
                 totalAmount: cart.totalPrice,
                 platformShare,
                 instructorShare,
@@ -80,7 +80,7 @@ const capturePayPalOrder = async (req, res) => {
             let capture = await client.execute(request);
 
             if (capture.result.status === 'COMPLETED') {
-                const cart = await CartModel.findOne({ userId: req.id }).populate('course_ids');
+                const cart = await CartModel.findOne({ userId: req.id }).populate('courses.course_id');
                 if (!cart) return res.status(404).json({ message: "No active cart found" });
 
 
@@ -90,8 +90,8 @@ const capturePayPalOrder = async (req, res) => {
 
                 const payment = new PaymentModel({
                     userId: req.id,
-                    course_ids: cart.course_ids,
-                    instructor_id: cart.course_ids[0].instructor_id,
+                    course_ids: cart.courses,
+                    instructor_id: cart.courses[0].course_id.instructor_id,
                     totalAmount: cart.totalPrice,
                     platformShare,
                     instructorShare,

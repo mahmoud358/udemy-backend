@@ -89,13 +89,13 @@ let courseSchema = mongoose.Schema({
         }
     },
 
-    priceAfterUserCoupon: {
-        type: Number,
-        default: function() {
-           return this.price; 
+    // priceAfterUserCoupon: {
+    //     type: Number,
+    //     default: function() {
+    //        return this.price; 
            
-        }
-    },
+    //     }
+    // },
     activeCouponToApply:{ type: mongoose.Schema.ObjectId, ref: "coupons" },
     
 }, { timestamps: true })

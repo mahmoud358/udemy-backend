@@ -9,10 +9,10 @@ const userRoles = require("../utils/user-roles");
 
 const {addToCart,viewCart,removeFromCart}= require('../controllers/cart')
 
-router.post('/:course_id',auth,allowedTo(userRoles.USER),addToCart)
+router.post('/:course_id',auth,allowedTo(userRoles.USER,userRoles.Instructor),addToCart)
 
-router.get('/',auth,allowedTo(userRoles.USER),viewCart)
+router.get('/',auth,allowedTo(userRoles.USER,userRoles.Instructor),viewCart)
 
-router.delete('/:course_id',auth,allowedTo(userRoles.USER),removeFromCart)
+router.delete('/:course_id',auth,allowedTo(userRoles.USER,userRoles.Instructor),removeFromCart)
 
 module.exports=router

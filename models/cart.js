@@ -5,10 +5,13 @@ let cartSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    course_ids: [{
+    courses: [{
+        course_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'course',
         required: true
+        },
+        finalPrice:{ type: Number}
     }
     ],
     totalPrice: {

@@ -314,18 +314,22 @@ let filterCourses = async function (req, res, next) {
 let updateCouponInCourse = async (req, res, next) => {
     const { activeCouponToApply } = req.body;
     try {
-        let course = await courseModel.findByIdAndUpdate(
-            req.params.id,
-            { activeCouponToApply },
-            { new: true }
-        );
-        
+        // let course = await courseModel.findByIdAndUpdate(
+        //     req.params.id,
+        //     { activeCouponToApply },
+        //     { new: true }
+        // );
+        const course = await courseModel.findById(req.params.id);
+    
         if (!course) {
             return next(new APIERROR(404, "course not found"));
         }
+        course.activeCouponToApply = activeCouponToApply;
+        course.priceAfterCoupon=course.price
+        const updatedCourse=await course.save();
         res.status(200).json({
             status: "success",
-            data: course
+            data: updatedCourse
         });
     } catch (err) {
         next(new APIERROR(404, err.message));

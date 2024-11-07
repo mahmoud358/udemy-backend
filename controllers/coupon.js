@@ -1,6 +1,5 @@
 const CouponModels = require('../models/coupon');
-const courseModel = require('../models/course');
-const CourseModel = require('../models/course');
+const courseModel = require('../models/course')
 const User = require('../models/usersmodel')
 const APIERROR = require("../utils/apiError")
 const todayDate = new Date().toISOString()
@@ -69,7 +68,7 @@ let getAllCoupon = async (req, res, next) => {
     }
 }
 
-let getCouponByCode = async (req, res, next) => {
+let addCouponToUserByCode = async (req, res, next) => {
     let code = req.params.code
     const userId = req.id;
     let { courseID } = req.body
@@ -80,18 +79,18 @@ let getCouponByCode = async (req, res, next) => {
     try {
         let result = await CouponModels.findOne({ code: code }).populate('courses')
         if (!result) {
-            return res.status(404).json({ message: " 'Coupon not found'" })
+            return next(new APIERROR(404, "Coupon not found"))
         }
 
         const isCouponValid = new Date(result.expiryDate) > new Date()
         // console.log("isCouponValid",isCouponValid)
         if (!isCouponValid) {
-            return next(new APIERROR(404, "copoun is expired not found"));
+            return next(new APIERROR(404, "copoun is expired "));
         }
 
         // --------------------------------------
 
-        const course = await CourseModel.findById(courseID);
+        const course = await courseModel.findById(courseID);
         // console.log("course",course)
         if (!course) {
             return next(new APIERROR(404, "Course not found"));
@@ -116,10 +115,10 @@ let getCouponByCode = async (req, res, next) => {
         user.coupons.push(result._id)
 
         const coursePriceAfterCoupon = course.price * (1 - (result.discountValue / 100))
-        const courseToUpdate = await CourseModel.updateOne({ _id: courseID }, { $set: { priceAfterUserCoupon: coursePriceAfterCoupon } })
 
+        
 
-        res.status(200).json({ status: "success", data: courseToUpdate, message: `${result.code} is valid and the price after coupon will be ${coursePriceAfterCoupon} as coupon discound is ${result.discountValue}` });
+        res.status(200).json({ status: "success", price: coursePriceAfterCoupon, message: `${result.code} is valid and the price after coupon will be ${coursePriceAfterCoupon} as coupon discound is ${result.discountValue}%` });
 
         // }
 
@@ -176,7 +175,7 @@ const addCouponToCourse = async (req, res, next) => {
                 continue;
             }
 
-            const courseToUpdate = await CourseModel.findByIdAndUpdate(element,
+            const courseToUpdate = await courseModel.findByIdAndUpdate(element,
                 {
                     $set: {
                         activeCouponToApply: isFoundCoupon._id,
@@ -250,4 +249,4 @@ let deleteCouponFromCourse = async (req, res) => {
 
 
 
-module.exports = { CreateCoupon, addCouponToCourse, getAllCoupon, getCouponByCode, getCouponByID, updateCoupon, deleteCoupon }
+module.exports = { CreateCoupon, addCouponToCourse, getAllCoupon, addCouponToUserByCode, getCouponByID, updateCoupon, deleteCoupon }
