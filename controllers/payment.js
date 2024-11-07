@@ -47,8 +47,9 @@ const completePayment = async (req, res) => {
         } else {
             const payment = new PaymentModel({
                 userId,
-                instructor_id: cart.courses[0].course_id.instructor_id, 
-                course_ids: cart.courses,
+                instructor_id: cart.courses[0].course_id.instructor_id,    
+                 
+                course_ids: cart.courses.map(course=>course.course_id),
                 totalAmount: cart.totalPrice,
                 platformShare,
                 instructorShare,
@@ -90,7 +91,7 @@ const capturePayPalOrder = async (req, res) => {
 
                 const payment = new PaymentModel({
                     userId: req.id,
-                    course_ids: cart.courses,
+                    course_ids: cart.courses.map(course=>course.course_id),
                     instructor_id: cart.courses[0].course_id.instructor_id,
                     totalAmount: cart.totalPrice,
                     platformShare,
