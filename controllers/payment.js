@@ -106,11 +106,11 @@ const capturePayPalOrder = async (req, res) => {
                 const newMessage= await MessageModel.create({
                     senderId: payment.instructor_id,
                     receiverId: req.id,
-                    message: `welcome in ${payment.course_ids[0].name.en} course`
+                    message: `welcome in ${payment.course_ids[0].name} course`
                 })
                 const notificationOfInstructor= await NotificationModel.create({
                     userId: payment.instructor_id,
-                    content: `New payment received for ${payment.course_ids[0].name.en} course`,
+                    content: `New payment received for ${payment.course_ids[0].name} course`,
                     type: "payment",
                     // sender: req.id
                 })
