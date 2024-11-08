@@ -100,17 +100,19 @@ const capturePayPalOrder = async (req, res) => {
                     paymentStatus: 'successful',
                     orderId
                 })
+                
 // console.log("payment",payment);
                 await payment.save();
+                const populatedPayment= await PaymentModel.populate(payment,{path:"course_ids"})
                 await CartModel.deleteOne({ _id: cart._id });
                 const newMessage= await MessageModel.create({
                     senderId: payment.instructor_id,
                     receiverId: req.id,
-                    message: `welcome in ${payment.course_ids[0].name} course`
+                    message: `welcome in ${populatedPayment.course_ids[0].name.en} course`
                 })
                 const notificationOfInstructor= await NotificationModel.create({
                     userId: payment.instructor_id,
-                    content: `New payment received for ${payment.course_ids[0].name} course`,
+                    content: `New payment received for ${populatedPayment.course_ids[0].name.en} course`,
                     type: "payment",
                     // sender: req.id
                 })
